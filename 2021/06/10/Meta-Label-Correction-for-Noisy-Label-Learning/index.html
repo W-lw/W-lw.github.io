@@ -1,0 +1,489 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&quot;auto&quot;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>Meta Label Correction for Noisy Label Learning - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Meta Label Correction for Noisy Label Learning">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-06-10 11:39" pubdate>
+        2021年6月10日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      32
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Meta Label Correction for Noisy Label Learning</h1>
+            
+            <div class="markdown-body">
+              <h2 id="Meta-Label-Correction-for-Noisy-Label-Learning"><a href="#Meta-Label-Correction-for-Noisy-Label-Learning" class="headerlink" title="Meta Label Correction for Noisy Label Learning"></a>Meta Label Correction for Noisy Label Learning</h2><p>链接：<a target="_blank" rel="noopener" href="https://kami.app/GHf2zo20XclM">https://kami.app/GHf2zo20XclM</a></p>
+<h3 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h3><p>利用弱监督或有噪监督来构建有效的机器学习模型一直是一个重要的研究问题，并且由于对用于训练模型的大规模数据集的需求越来越大，它的重要性进一步增加。弱监督或有噪监督可能有多种来源，包括非专业的标注者、基于启发式或用户交互信号的自动标注方式。有大量的前期工作集中于利用有噪的标签。最值得注意的是，最近的工作通过使用元学习实例加权的方法得到了不错的效果，在这种方法中，元学习框架用于为有噪标签分配实例权重。在本文中，作者将此方法扩展为元学习框架内的标签校正问题，将标签校正过程看作是一个元过程，并提出了一个新的元学习框架<strong>MLC (Meta Label Correction)</strong> 用于有噪标签学习。具体而言，采用标签校正网络作为元模型，对有噪标签进行校正，同时利用校正后的标签对主模型进行训练。两个模型通过求解一个双层优化问题来联合训练。在图像识别和文本分类任务中，作者对不同的标签噪声水平进行了广泛的实验，对比了重加权和修正的方法，结果表明修正框架解决了重加权的一些限制。</p>
+<h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><p>有噪数据有多种来源：错误标签、非专业标注者、基于启发式或用户交互信号的自动标注等。通过有噪标签训练深度神经网络是很具挑战性的，因为深度网络很容易你和并记住噪声，因此为了更有效地进行学习，最近提出了多种方法来有效地结合干净标签的数据和有噪标签的数据。其中一项工作是侧重于通过 co-teaching 或课程学习方法从有噪数据中选择那些可能是正确标注的样本；另一类工作则试图为弱监督实例去重新赋权重用于选择性训练，而不是包括或者排除它们。有些方法使用元学习框架为每个样本赋予重要性分数，使得更重要的样本能对主模型训练产生更大的贡献。</p>
+<p>Label re-weighting 方法的一个限制就是它仅限于提高体感或者降低一个样本在学习过程中的贡献，另一种方法则是标签校正。它的目的是在对弱标签生成过程进行一定假设的基础上对有噪声的标签进行修正，某种意义上说，标签校正的目的不仅仅是选择或赋予有用的示例较高的权重，还包括改变标签错误的示例的标签。然而之前的标签校正方法依赖于对弱标签生成过程的交涉，因此往往涉及两个独立的步骤：(1) 估计一个标签损坏矩阵；(2) 利用损坏矩阵训练一个基于噪声数据的模型；估计损坏矩阵通常涉及到关于噪声产生过程的假设，例如，假设有噪标签只依赖于真实的标签，并且独立于数据本身。</p>
+<p>这篇文章中，作者从元学习的角度，采用标签校正法来解决有噪标签的学习问题，作者将该方法称为元标签校正 (<strong>MLC</strong>)。具体来说，就是把标签校正过程看作一个元过程，这意味着它的目标是为弱标签的样本提供正确的标签。同时，利用元模型生成的校正后的表亲啊对主模型进行训练，元模型和主模型通过双层优化过程并行学习，通过一种可微的方式更新标签校正过程使模型在干净数据集（干净标签作为验证集）上的性能最大化。<strong>MLC</strong> 扩展了利用这两种方法的优点，与基于实例权重重新赋值的元学习方法不同的是，<strong>MLC</strong> 提供了一个更精确的方法利用有噪标签，它能够探索标签空间中所有可能的类；与之前的标签校正方法不同的是，<strong>MLC</strong> 没有对潜在的标签噪声做假设，并且同时学习校正模型和主模型。下图示例了re-weighting方法最多可以降低有噪样本的权值，减少它们对学习过程的影响，而 <strong>MLC</strong> 可以成功地将有噪声的标签校正为真实的标签：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201213213533.png" srcset="/img/loading.gif" lazyload alt="image-20201213213532316" style="zoom:50%;" /></p>
+<p><strong>Contributions</strong></p>
+<ul>
+<li>文中将有噪监督学习任务看作一个元标签校正过程，其中校正网络在元过程阶段训练来为主模型的训练提供可靠的标签；</li>
+<li>文中对比了 re-weighting 方法和校正方法在处理有噪标签数据的两种策略；</li>
+<li>作者在3个图像识别和4个大规模文本分类任务上进行了实验，这些任务具有不同的噪声水平和类型，包括真实世界的噪声标签。实验结果表明，该方法在标签校正和权重调整方面由于之前最好的方法，证明了该方法的有效性。</li>
+</ul>
+<h4 id="Learning-with-label-correction"><a href="#Learning-with-label-correction" class="headerlink" title="Learning with label correction"></a>Learning with label correction</h4><p>第一类工作的目的是通过假设噪声标签的产生方式，尽可能地纠正弱标签。考虑一个问题，将数据分为 k 类，标签纠正过程包括估计一个标签损害矩阵 $C_{k\times k}$, 其中 $C_{ij}$ 表示观测标签为 $i$, 而真实标签为 $j$ 的概率；这种方式的缺点是，标签损害矩阵的估计是一种特定的方式，而且估计过程是独立于主模型过程，因此不允许从主模型反馈到估计过程。</p>
+<h4 id="Learning-to-re-weight-training-instances"><a href="#Learning-to-re-weight-training-instances" class="headerlink" title="Learning to re-weight training instances"></a>Learning to re-weight training instances</h4><p>另一类工作则侧重于从噪声数据中分离出可能是正确样本的子集，这种方法的一个扩展是为每个样本分配一个可学习的权重。实例的权重本质上是主模型的超参数，可以通过构造一个双层优化问题来学习。这个框架允许示例权重学习和主模型相互交流，从而可以学习到更好的模型。</p>
+<p>文中的方法是通过在有噪样本中学习建模和校正标签噪声，不同于分别处理标签校正和模型学习，该方法是通过元学习来协同优化这两个步骤。</p>
+<h4 id="Meta-Label-Correction"><a href="#Meta-Label-Correction" class="headerlink" title="Meta Label Correction"></a>Meta Label Correction</h4><p>根据之前一些工作的设定，作者先假设弱监督下的学习设置包含两组数据：一组是带有干净标签的数据，另一组为有噪标签；通常，前者比后者小得多。直接在小的干净集上训练往往是次优的，因为太少的数据很容易导致过拟合。直接在有噪声的集合(或有噪声和干净集合的组合)上进行训练也往往不是最优的，因为大容量的模型可以拟合和记忆噪声。标签校正方法的一个优点是，它允许我们在学习过程中结合干净的标签和校正过的标签。作者提出的方法采用了标签校正方法，同时通过统一的元学习框架与主模型过程共同优化标签校正过程。作者通过训练一个元学习者(元模型)来纠正嘈杂的标签，以及一个主模型，用来自元模型的纠正过的标签来构建最佳的预测模型，从而使元模型和主模型能够相互加强。</p>
+<h5 id="A-meta-learning-based-formulation-for-label-correction"><a href="#A-meta-learning-based-formulation-for-label-correction" class="headerlink" title="A meta-learning based formulation for label correction"></a>A meta-learning based formulation for label correction</h5><p>给定一个干净数据集 $D=\{x,y\}^m$, 和一个有噪数据集 $D^\prime =\{x,y^\prime\}^M$, m远小于M；为了更好地利用弱标签中携带的信息，作者提出构造一个标签校正网络 <strong>LCN</strong>，作为元模型，以一对有噪声的数据样本和弱标签作为输入，并尝试为该数据生成一个校正标签。<strong>LCN</strong> 是一个参数为 $\alpha$ 的函数，$y_c=g_\alpha (h(x),y^\prime)$ 纠正 x 的原始有噪标签 $y^\prime$，得到的 $y_c$ 是一个soft标签；与此同时，主模型 $f$ 实例化为另一个函数 $y=f_w(x)$. </p>
+<p>不连接这两个模型，就：1）没办法保证从LCN得到的校正后的标签是真正有意义的，因为没有干净的标签直接就训练LCN是不可能的；2）如果LCN提供的标签与未知的真实标签不一致，如何保证主模型的输出能够拟合到正确的标签上；幸运的是，这两个模型通过双层优化框架能够被链接到一起，其动机是基于这样一种直觉：如果LCN生成的标签质量高，那么使用这些经过校正的标签进行监督训练的分类器在单独一组干净示例上的损失就会小。形式上可以用下式表示：</p>
+<script type="math/tex; mode=display">
+\min _\alpha \mathbb{E}_{(x,y)\in D}l(y,f_{w_\alpha^*}(x))\\
+s.t.\ w_\alpha^* =arg\min_w \mathbb{E}_{(x,y')\in D'}l(g_\alpha(h(x),y'),f_w(x))</script><p>文中将此框架称为 元标签校正(<strong>MLC</strong>)，下图为框架的概览：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201213213444.png" srcset="/img/loading.gif" lazyload alt="image-20201213213433150"></p>
+<p>在双层优化中，LCN 的参数 $\alpha$ 是上层参数（元参数），而主模型参数 $w$ 是底层参数（主参数）；</p>
+<h5 id="Efficient-meta-gradient-with-k-step-SGD-from-main-parameters"><a href="#Efficient-meta-gradient-with-k-step-SGD-from-main-parameters" class="headerlink" title="Efficient meta-gradient with k-step SGD from main-parameters"></a>Efficient meta-gradient with k-step SGD from main-parameters</h5><p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/202012dsada13224730.png" srcset="/img/loading.gif" lazyload alt="image-20201213224440574" style="zoom: 50%;" /></p>
+<p>上图为不同元优化次数的示意图；</p>
+<h5 id="Training-with-soft-labels-from-LCN"><a href="#Training-with-soft-labels-from-LCN" class="headerlink" title="Training with soft labels from LCN"></a>Training with soft labels from LCN</h5><p>LCN 不仅明确地对校正标签在数据样本和它的有噪标签上的依赖性进行建模，而且它还确保 LCN 的输出是对所有可能的类的有效分类分布。在MLC中，软标签是至关重要的，因为它们使梯度从主模型返回到元模型成为可能。但是，当主模型采用这些带有软修正标签的例子时，由于修正标签中附加的不确定性，给训练带来了困难。这可以通过以下策略来缓解。在训练每个 batch 的干净数据是，作者将其分为两部分，一部分作为干净的评估集，另一部分加入到主模型 $f$ 的训练过程中，因为干净的数据集中的一小部分能够为训练提供干净的知道，能方便模型训练。这已经被证明在类似情况下是有效的。</p>
+<h5 id="Remark-Label-correction-vs-label-reweighting"><a href="#Remark-Label-correction-vs-label-reweighting" class="headerlink" title="Remark: Label correction vs label reweighting"></a>Remark: Label correction vs label reweighting</h5><p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201214091552.png" srcset="/img/loading.gif" lazyload alt="image-20201214091549568" style="zoom:33%;" /></p>
+<p>对比权重网络 Meta-WN 和 元标签校正 MLC：</p>
+<ul>
+<li>Meta-WN 只是试图为给定的有噪标签类赋值新的权重；而MLC则试图校正给定的弱标签，并考虑了所有类别的可能性；</li>
+<li>另一个关键区别就是，WN以loss为输入，当不同数据对的loss相同时，模型就无区分能力；而MLC则不是；</li>
+</ul>
+<h4 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h4><p><strong>Noisy Label sources</strong>   保留一千个样本作为 clean set，有噪数据集通过以下两种设置对原数据标签进行破坏而产生的：</p>
+<ul>
+<li><strong>Uniform label noise (UNIF)</strong> 对于一个干净样本，以概率$\frac{\rho}{C}$ 随机将其扰动到任意类别，并以 $\rho$ 的概率保持原标签；</li>
+<li><strong>Flipped label noise (FLIP)</strong> 对于一个干净样本，以概率 $\rho$ 随机扰动到其它C-1类；</li>
+<li><strong>Real-world noisy labels</strong> Clothing 1M数据集包含来自真实世界中的噪声；</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201214110545.png" srcset="/img/loading.gif" lazyload alt="image-20201214110543826" style="zoom: 67%;" /></p>
+<h5 id="Analysis-and-ablation-studies"><a href="#Analysis-and-ablation-studies" class="headerlink" title="Analysis and ablation studies"></a>Analysis and ablation studies</h5><p>作者进行了消融实验，对比分析了 元学习过程中 K 的大小对实验结果的影响，以及噪声等级对不同模型实验结果的影响；</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201214110652.png" srcset="/img/loading.gif" lazyload alt="image-20201214110650527" style="zoom:67%;" /></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20201214124309.png" srcset="/img/loading.gif" lazyload alt="image-20201214124307588" style="zoom: 33%;" /></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/10/Self-training-Pseudo-Label-Methods/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Self-training/Pseudo Label Methods</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/10/%E5%8F%A5%E5%AD%90%E5%8E%BB%E5%81%8F/">
+                        <span class="hidden-mobile">句子去偏</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

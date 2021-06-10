@@ -1,0 +1,603 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&quot;auto&quot;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>A survey of bias in NLP - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="A survey of bias in NLP">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-06-10 11:28" pubdate>
+        2021年6月10日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      8.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      91
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">A survey of bias in NLP</h1>
+            
+            <div class="markdown-body">
+              <h3 id="Mitigating-Gender-Bias-in-Natural-Language-Processing-Literature-Review"><a href="#Mitigating-Gender-Bias-in-Natural-Language-Processing-Literature-Review" class="headerlink" title="Mitigating Gender Bias in Natural Language Processing: Literature Review"></a>Mitigating Gender Bias in Natural Language Processing: Literature Review</h3><p>ACL 2019 <a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1906/1906.08976.pdf">https://arxiv.org/ftp/arxiv/papers/1906/1906.08976.pdf</a></p>
+<font face="楷体">这篇是ACL 2019 上的关于性别 Bias 的综述，内容上主要是对问题、方法和数据集进行了介绍，能够帮助理解性别 bias、刻板印象（stereotpyes）等概念以及19年之前的一些debias方法。内容比较简单易懂，这里仅做简单概述，有兴趣可以读读原文。</font>
+
+<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>本文综述了当前NLP中认知和消除性别 bias 的研究，从四种表现形式来讨论性别 bias，此外，文中还讨论了现有的 debias 方法的优缺点，最后讨论了未来的研究，以重新认知和减轻 NLP 中的性别 bias。</p>
+<h4 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h4><p>在 NLP 系统中，性别 bias 表现在多个部分，包括训练数据、资源、预训练模型和算法本身之中。在任意这些部件中包含 bias 的 NLP 系统都会产生性别有偏的预测，有时候甚至会扩大训练集中的 bias。性别 bias 在NLP算法中传播有可能在下游任务中会强化有害的刻板印象，这对现实世界会造成影响，例如有人担心在简历自动筛选系统中，当唯一的区别因素是应聘者的性别时，会优先考虑男性应聘者。</p>
+<p>本文中也引入了分配性偏差和表征偏差，前者可以被定义为一种经济现象，系统不公平地将资源分配给某些群体，后者发生在当系统偏离了特定群体的社会身份和表征时。就应用来看，当模型在与主要性别相关的数据上的表现更好是就反映出分配性bias；当word embedding 和模型参数中捕获到性别与某些概念之间的关联时，就反映出表征 bias；</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918215618.png" srcset="/img/loading.gif" lazyload alt="image-20200918092417062"></p>
+<p><strong>诋毁（Denigration）：</strong>指得是在文化或历史上使用贬低的术语；<strong>刻板印象（stereotyping）：</strong>加强了社会中已经存在的刻板印象；<strong>认知（recognition）：</strong>认知偏差是指在识别任务给定算法的不准确性；<strong>under-representation：</strong> 指某特定群体表征上不成比例地低；</p>
+<h4 id="Observing-Gender-Bias"><a href="#Observing-Gender-Bias" class="headerlink" title="Observing Gender Bias"></a>Observing Gender Bias</h4><p>介绍了三类评估 bias 的方法：</p>
+<ul>
+<li><p>Adopting Psychological Tests</p>
+<p>将一种名为 隐性关联测试（Implicit Association Test）的新理测试方法引入到词(Word Embedding Association Test, WEAT)和句子 (Sentence Encoder Association Test, SEAT) embedding 的 bias 检测中；</p>
+</li>
+<li><p>从embedding来分析性别子空间</p>
+<p>包括16年的 <strong>Hard Debias</strong>，今年的<strong>Double-Hard Debias</strong>、<strong>SENT-DEBIAS</strong>，都是考虑从词或句子的embedding中移除性别子空间的分量的角度来进行事后去偏；这类方法就是通过定义一些性别词对（<code>she-he, her-his, girl-boy, woman-man</code>) 来找出这个子空间。</p>
+</li>
+<li><p>不同性别不同表现</p>
+<p>通过将测试数据中的单一性别替换成另一性别，得到句子对，去测试原始数据集和性别交换数据集上模型表现的差异；</p>
+<p>NLP 的标准评估数据集在衡量性别 bias 方面是不相等的，首先这些数据集通常也包含 bias，因此在这些数据集上的评估可能无法揭示性别 bias，此外，执行复杂的NLP任务的系统所做出的预测取决于多种因素，因此必须仔细设计数据集，隔离性别对输出的影响，以便能够探测性别bias，文中将这类数据集命名为<strong>性别偏见评估测试集（GBETs）</strong>；</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918215635.png" srcset="/img/loading.gif" lazyload alt="image-20200918103800447"></p>
+<h4 id="通过数据操纵-debias"><a href="#通过数据操纵-debias" class="headerlink" title="通过数据操纵 debias"></a><strong>通过数据操纵 debias</strong></h4><p>有两种，一种是带着 debias 的目的去重训练模型，另一种是事后去偏，仍利用原始的 embedding，但是在训练过程中以及测试过程中对现有模型进行修补，以调整其输出；</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/2020091811081das4.png" srcset="/img/loading.gif" lazyload alt="image-20200918110814671"></p>
+<h5 id="为训练语料去偏"><a href="#为训练语料去偏" class="headerlink" title="为训练语料去偏"></a>为训练语料去偏</h5><ol>
+<li><p><strong>数据增强：</strong>通过性别交换创建一个性别平衡的数据集来试图消除模型的预测偏差（GBETs是用来评估去偏前后模型表现差异的），数据增强的工作流程如下：对于原始数据集中的每个句子，创建一个相同的但性别交换了的句子；接下来对每个原始句子以及与之对应的性别替换句子进行匿名化；匿名化即用匿名的实体 ”E1“ 来替换所有命名实体，例如 <em>Mary likes her mother Jan</em> 在性别交换以及匿名化处理后变成 <em>E1 likes his father E2</em>。这就移除了句子中命名实体和性别之间的联系，在原始数据和增强数据结合的数据集上对模型进行训练。识别性别专用词和对应的性别词通常需要手动创建列表。</p>
+</li>
+<li><p><strong>性别标记：</strong>在某些任务中，如MT，混淆数据点来源的性别可能导致不准确的预测，因为训练集以男性数据为主，所以模型学习了扭曲的统计关系，因此当性别来源不明确时，更有可能预测说话者是男性。性别标记是通过在每个数据点的开始出添加一个表示数据点来源的性别标记来减轻这一问题。例如，”I’m happy” 被标记成 ”MALE I’m happy.” 从理论上讲，在句子中对性别信息进行编码可以提高译文的质量，模型可以将标记与其它数据分开进行解析，保留原句中的性别信息。</p>
+</li>
+<li><strong>Bias Fine-Tuning</strong>：给定任务的无 bias 数据可能很稀缺，但是其相关任务可能存在无 bias 数据，Bias Fine-Tuning 结合了对无偏数据集的迁移学习，以确保模型在使用目标任务上有偏的数据集进行 fine-tuning 之前，模型能尽可能包含最小的 bias；</li>
+</ol>
+<h5 id="为词-embedding-性别去偏"><a href="#为词-embedding-性别去偏" class="headerlink" title="为词 embedding 性别去偏"></a>为词 embedding 性别去偏</h5><ol>
+<li><strong>移除 embedding 中性别子空间中的分量</strong></li>
+<li><strong>学习性别中立的词 embedding</strong></li>
+</ol>
+<h4 id="通过调整算法去偏"><a href="#通过调整算法去偏" class="headerlink" title="通过调整算法去偏"></a>通过调整算法去偏</h4><p><strong>限制预测</strong></p>
+<p>NLP模型有放大bias的风险，(Reducing Bias Amplification) RBA 方法限制其模型优化函数，以确保期预测符合限定条件。例如，当RBA用于预测视觉语义角色标签时，它限制了预测从事特定活动的男女比例，以防止模型放大bias。</p>
+<p><strong>对抗学习：调整鉴别器</strong></p>
+<p>对传统GAN进行改动，让生成器对受保护的性别属性进行学习。换句话说，在给定的任务中，生成器试图阻止鉴别器识别性别，这种方法比较容易泛化：因为它可以用来消除任何使用基于梯度学习的模型的偏差。</p>
+<h4 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h4><p>目前的方法存在一些局限性：1. 大多数 debias 技术几种在端到端 NLP 系统的单一的模块化的过程上，这些单独的部分如何聚集起来形成一个理想的无偏系统还有待发现；2. 大多数 debias 方法尽在优先的应用中得到了实验验证，不清楚能否推广到其它任务或模型上；3. debias 技术也许会引入一些噪声，大致性能下架；4. 手工设计的 debias 方法会无意间隐含开发者的 bias；</p>
+<hr>
+<hr>
+<h3 id="Language-Technology-is-Power-A-Critical-Survey-of-“Bias”-in-NLP"><a href="#Language-Technology-is-Power-A-Critical-Survey-of-“Bias”-in-NLP" class="headerlink" title="Language (Technology) is Power: A Critical Survey of “Bias” in NLP"></a>Language (Technology) is Power: A Critical Survey of “Bias” in NLP</h3><p><strong>介绍</strong>：<font face="楷体">这篇文章是 ACL 2020 上的一篇文章，文中对研究NLP领域的 “bias” 问题的146篇论文进行了归类，并指出这些文章在研究 “bias” 问题时的不规范论证、彼此不一致的问题，之后作者从社会学、语言学等领域更深而广的层次呼吁后续的研究者能够将这一领域的研究规范化，并提出了三条建议以及一些相关研究问题。</font></p>
+<p><a target="_blank" rel="noopener" href="https://aclweb.org/anthology/2020.acl-main.485.pdf"><strong>原文链接</strong></a></p>
+<h4 id="Abstract-1"><a href="#Abstract-1" class="headerlink" title="Abstract"></a>Abstract</h4><p>本文中，作者调研了146篇分析 NLP 中的 “bias“ 问题的论文，发现他们的动机是含糊不清、不一致的，缺乏规范的推理论证，尽管分析 “bias” 是一个固有的规范过程。他们进一步发现这些论文提出的评测、消除 “bias” 的方法与他们的动机并不匹配，并且他们没有接触 NLP 以外的文献。基于这些发现，作者提出了三个建议来指导在 NLP 系统中分析 “bias” 的工作。这些建议基于对语言和社会等级之间的关系的更宽广的认识，鼓励研究者和实践者明确表达他们关于 ”bias“ 的概念认知，例如，系统的哪些行为是有害的，以什么方式、对谁有害、为什么？并以受NLP系统影响的社区成员的生活经历为中心展开工作，同时质疑和重新设想技术人员和此类社区之间的权力关系。</p>
+<h4 id="Introduction-1"><a href="#Introduction-1" class="headerlink" title="Introduction"></a>Introduction</h4><p>近些年出现了大量分析NLP系统中的 “bias” 的工作，以及包括语言建模、指代消解、机器翻译、情感分析、仇恨词检测在内的各种任务的系统中研究 “bias”。</p>
+<p>尽管这些文章通过说明 NLP 系统中的某些方式有害，奠定了重要的基础，但是大多数工作都未能从以开始就批判性地探讨是说明构成了 ”bias“。尽管偏见分析是一个固有的规范过程，在这个过程中，有些系统行为被认为是好的，有些则是有害的，但是讨论关于 NLP 系统中的 ”bias” 论文总是充斥着未明确说明的假设，这些假设是关于哪些系统行为有害、以何种方式造成损害、对谁有损害、为什么等方面的。事实上，“bias” (或性别偏见或社会偏见) 被用来描述一系列系统行为，即使它们可能以不同的方式、对不同的群体或出于不同的原因造成了损害。即使是相同任务的NLP系统中，不同的论文在分析 “bias” 时，也常常定义出不同的概念。</p>
+<p>例如，以下的系统行为都可以不言而喻地理解为 ”种族歧视“：a) 在 embedding 空间中，与非裔美国人相关的名字的 embedding (与欧洲裔美国人相关的名字对比)距离令人不愉快的词要比令人愉快的词更近；b) 对于包含与非裔美国人有关的名字和包含与欧裔美国人有关的名字的句子，情绪分析系统得出不同的强度分值；c) toxicity detection system 在评估包含于非裔美国人英语相关特征的推文时，得到的结果相比于没有这些句子的推文更具攻击性。此外，这些论文有的侧重于书面文本中表达的种族偏见，有的则关注针对作者的种族偏见。使用不精确的术语掩盖了这些重要的区别。</p>
+<p>作者调研了146篇分析 NLP 中的 “bias” 的论文，发现它们的动机经常是模糊不清而且不一致的，许多论文缺乏规范的论证过程，此外，当提出莲花技术来衡量或减轻 ”bias“ 时，大多数论文都没有涉及到 NLP 之外的相关文献来确定规范的关注点，结果是许多方法于它们的动机并不匹配，而且彼此之间也不具有可比性。</p>
+<p>之后，作者提出了三个指导分析 NLP 中的 “bias” 的建议，作为这一方向前进道路的开端。作者任务，这一工作应该探究语言和社会阶级之间的关系，并呼吁从事这类工作的研究人员和从业者阐明他们关于 “bias” 的概念，以便能够就哪些系统行为是有害的、以何种方式、对谁、为什么进行讨论，并且作者建议技术人员和受 NLP 系统影响的社区之间进行更深入的交流。</p>
+<h4 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h4><p>作者调研的146篇论文是从计算机语言学相关领域国际会议中找出来的，论文都是2020年5月之前的论文，主要针对社会偏见问题的定义、度量与消除，下表是这146篇论文中涉及的NLP任务及对应论文数量：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200821150849.png" srcset="/img/loading.gif" lazyload alt="image-20200821150842055"></p>
+<p>作者根据一些工作中开发的伤害分类方法对这些论文进行了分类，区分了所谓的分配性 (allocational) 伤害和表征性 (representational) 伤害。分配性伤害会引起自动化系统在分配资源或机会的时候对不同的社会群体做出不公平的行为，表征性伤害出现在当系统以不太有利的方式代表某些社会群体，贬低他们，或者完全不承认他们的存在。根据动机和所提出的技术，作者将这些论文分为以下几类：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200821164153.png" srcset="/img/loading.gif" lazyload alt="image-20200821164153171"></p>
+<ul>
+<li>表征性伤害：<ul>
+<li>Stereotyping：传播对特定社会群体的负面概括的刻板印象；</li>
+<li>其它表征性伤害：不同社会群体在系统表现差异，歪曲不同社会群体在人口分布上的语言，贬低特定社会群体的语言；</li>
+</ul>
+</li>
+<li>Questionable Correlations：系统行为和语言特征之间的可疑相关性，通常与特定的社会群体有关；</li>
+<li>Vague：对于“bias” 的概念表述含糊不清或完全没有进行描述；</li>
+<li>调研、框架和元分析；</li>
+</ul>
+<p>在表2中，作者提供了上述分类的计数 (附录中提供了每个类别的论文列表) ，附录中的表3包含了这些论文在一些列不同的 NLP 任务中的动机和技术的例子。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200822102957sad.png" srcset="/img/loading.gif" lazyload alt="image-20200822102856067"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/202008231640da41.png" srcset="/img/loading.gif" lazyload alt="image-20200822103046249"></p>
+<h4 id="Findings"><a href="#Findings" class="headerlink" title="Findings"></a>Findings</h4><p>作者在分类后，发现了这些论文中的一些共性，并进行了讨论：</p>
+<h5 id="Motivations"><a href="#Motivations" class="headerlink" title="Motivations"></a>Motivations</h5><p><strong>论文阐述了广泛的动机、多重动机、模糊的动机，有时候根本没有动机。</strong> </p>
+<p>作者发现，这些论文的动机涵盖了所有六种类别，每一种类型都有几篇论文，那些分析 NLP 系统中的 “bias” 提供综述或框架的论文中通常会陈述多种动机。然而，如同表3中举的例子，许多其它论文 (33%) 也这样做了，有些论文(16%) 指陈述了模糊的动机或根本没有动机，例如：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200821170441.png" srcset="/img/loading.gif" lazyload alt="image-20200821170440994"></p>
+<p>这些例子没有说明NLP系统的“歧视”可能意味着什么，什么构成了“系统性偏见”，或者NLP系统如何促成“社会不公正”(本身没有定义)。</p>
+<p><strong>论文的动机有时包含了不规范的论证。</strong></p>
+<p>作者发现，有些论文(32%) 没有根据显著规范的关注点来寻找动机，而是关注在系统性能上。例如，下面的第一段引用包含了规范的论证，即模型不应该使用人口统计信息来做预测，而第二段引用则侧重于有损系统性能的学习相关性。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/2020082210421as2.png" srcset="/img/loading.gif" lazyload alt="image-20200822104212238"></p>
+<p><strong>即使论文明确地陈述了动机，但也常常不清楚为什么被描述为 “偏见” 的系统行为是有害的，以什么方式，对谁有害。</strong></p>
+<p>作者发现即使论文中有清晰的动机，但却没能说清那些系统行为是有害的，以什么方式、对谁、为什么，例如：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200822105205sada.png" srcset="/img/loading.gif" lazyload alt="image-20200822105117051"></p>
+<p>这些例子没有说清楚 “problematic bias” 或非理想的用户体验可能是什么样子的，系统的行为如何导致这些事情的，以及相关的涉众或用户可能是谁。相反，作者发现那些提供了调研或框架的论文在分析这些问题的时候，往往指出了谁受到了伤害，承认不同的社会群体由于与 NLP 系统的不同关系或不同的社会地位，得到的用户体验也可能不同，例如有一篇文章中就主张在涉及对话代理时，应该对用户群体的特上下文和兴趣有深入的理解。</p>
+<p><strong>为同一任务而开发的 NLP 系统的论文常常对 “偏见” 有不同的论述。</strong></p>
+<p>有些论文即使是讨论同一 NLP 任务，对于 “bias” 的概念却有本质上的不同，有时甚至是不一致的。表3中的第3、4行包含了不同文章中对于 机器翻译任务中 “bias” 的不同定义，导致了两篇文章提出了不同的技术，第5、6行包含了关于 embedding 空间中的 “bias“ 的论文，他们分别陈述了不同的东起，却提出了量化刻板印象的技术。</p>
+<p><strong>论文的动机将分配伤害和表征伤害混为一谈。</strong></p>
+<p>作者发现，有些论文(16%) 的动机提到了直接的表征性伤害，例如刻板印象，以及更远的分配性伤害，在刻板印象的情况下，分配伤害通常被认为是刻板印象对下游任务的影响。这类论文通过想象的下游效应来证明关注特定的系统行为是正确的，即使他们根本就没有对下游效应进行测量。探究嵌入空间中的 ”bias“ 的论文游戏喜欢这样做，因为 embedding 经常被用作其它系统的输入：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200822124152asdaq.png" srcset="/img/loading.gif" lazyload alt="image-20200822124152561" style="zoom:67%;" /></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200822124542.png" srcset="/img/loading.gif" lazyload alt="image-20200822124251822"></p>
+<p>相反，那些提供调研或框架的论文以他们的方式将这些问题阐述清楚了。</p>
+<h5 id="Techniques"><a href="#Techniques" class="headerlink" title="Techniques"></a>Techniques</h5><p><strong>论文中谈到的技术没有在 NLP 之外的相关文献中找到很好的理论基础。</strong></p>
+<p>论文的动机常常很模糊、彼此不一致、缺乏规范的论证，这也许不令人惊讶，作者还发现，论文中提出的用来衡量或减轻 ”bias“ 的量化技术并不能有效地与 NLP 领域之外的相关文献产生很好的联系。</p>
+<p>研究刻板印象的论文是一个值得注意的例外：WEAT (Word Embedding Association Test) 使用了一种隐式关联测试的方法，它来自于1998年的一篇社会心理学文献中的内容，此外还有一些研究种族和性别偏见的文章也借鉴了黑人女权主义的交叉研究。</p>
+<p><strong>论文中的技术与他们的动机并不匹配。</strong></p>
+<p>作者发现大约21%的论文的研究动机种包含了分配损害，但只有四篇文章真正提出用于衡量或减轻分配性损害的技术。</p>
+<p><strong>论文关注的点是一个狭窄范围内潜在的 “bias” 来源。</strong></p>
+<p>作者发现几乎所有的论文都把系统的预测作为 ”bias“ 的潜在来源，此外，还有人关注数据集中的 ”bias“（例如，训练数据中性别代词数量的差异）。大多数论文没有细究在开发和部署周其中做出其它决策的规范性含义，考虑到他们的动机有时候也不包含规范性论证，这也许并不令人惊讶。少数论文是例外，他们说清楚了任务的定义、注释指南以及评估指标。</p>
+<h4 id="A-path-forward"><a href="#A-path-forward" class="headerlink" title="A path forward"></a>A path forward</h4><p>作者在这一节提出了指导 ”bias“ 研究工作的三条建议，并为每条建议都提供了几个具体的研究问题，作者强调这些问题并不全面，器目的是引出进一步的问题于研究路线：</p>
+<ol>
+<li><font color=blue size=4>在探究语言与社会等级关系的 NLP 领域外的相关文献中，分析自然语言处理系统中的 “bias”，将表征性伤害本身视为有害的。</font>)
+
+作者认为，引用 NLP 领域外的相关文献能够使得这一研究更加全面，许多学科，包括社会语言学、语言人类学、社会学和社会心理学，研究语言如何承担社会意义，以及语言在维持社会等级中的作用。<font face="STCAIYUN">接下来作者举了很多 NLP 之外的相关领域的文献中关于社会中存在的”bias“ 问题的例子，这里不列举了。</font>
+
+<p>认识到语言在维持社会等级中的作用，对于分析 NLP 系统中 “bias” 未来的研究至关重要，首先，它有助于解释为什么表征伤害本身就是有害的；其次，语言和社会层级之间的复杂关系说明了为什么研究 NLP 系统中的 “bias“ 如此具有挑战性，这意味着研究人员和从业者将需要超越现有的算法公平性技术。作者认为，如果不与 NLP 之外的相关文献作为基础来开展研究工作的话，研究人员和实践者可能会只去度量或减轻那些方便度量或减轻的 ”bias“，而不是最规范的关注点。</p>
+<p>更具体地说，作者建议分析 NLP 中 ”bias“ 的工作应该围绕以下问题重新定位社会等级制度、语言以实形态和 NLP 系统是如何共同生产的？研究人员和时间着应该询问现有的社会等级和语言以实是如何驱动 NLP 系统的开发和部署的，以及这些系统是如何复制这些等级和意识的。作为围绕这个问题重新定位 NLP 系统 ”bias“ 分析工作的起点，作者提供了几个具体的研究问题：</p>
+<ul>
+<li><p><strong>在开发和部署周期中，社会层次结构和语言意识如何影响决策？这些决策会导致什么样的NLP系统，它们会排除掉哪些特征？</strong></p>
+<ul>
+<li>一般性假设：NLP 系统应该遵循哪些语言规范？哪些语言时间被默认为是标准的、普通的、正确的或适当的？</li>
+<li>任务定义：NLP 系统是为哪些人开发的？任务定义如何 discretize the world？例如，在处理人口统计属性预测任务时，如何划分社会群体？那母语预测任务中的语言呢？</li>
+<li>数据：数据集是如何手机、预处理、标记或注释的？注释指南、注释者的假设和观点的影响是什么，以及注释聚合过程？</li>
+<li>评估：NLP 系统是如何评估的？评价指标的影响是什么？是否进行了非定量的评估？</li>
+</ul>
+</li>
+<li><p><strong>NLP 系统如何重现或转化以实形态？那种语言变体或实践被认为是好的或不好的？好的语言是不是以为着它更容易被现有的 NLP 系统所掌握？例如，许多语言实践产生的语言现象被称为 ”noisy text“，并且被当作是正则化的目标。NLP 系统所复现的语言意识形态是如何维持社会层级的？</strong></p>
+</li>
+<li><p><strong>哪些表征性损害正在被衡量或减轻？这些二是最符合规范的损害，还是说仅仅是因为现有的算法公正系统更容易处理这类问题？还有其它可分析的表征性伤害吗？</strong></p>
+</li>
+</ul>
+</li>
+<li><font color=blue size=4>提供明确的表述，说明为什么被描述为 “bias” 的系统行为是有害的，以什么方式造成损害，对谁有害。坦率地说出这些陈述背后的规范性论述。</font>
+
+<p>换句话说，研究者和实践者应该清楚地表明他们对 ”bias“ 的理解，正如前文所述，论文在描述系统行为时，经常对 ”bias“ 使用不言自明的陈述，这种不精确术语的使用导致了所有论文都声称要分析 NLP 中的 ”bias“，有时甚至是为相同任务而开发的系统，但对于 “bias” 却有着不同甚至不一致的概念，并且没有对这些差异进行解释。</p>
+<p>然而，分析 “bias” 是一个内在的规范过程，在这一过程中，一些系统行为被认为是好的，另一些则是有害的，但是很多论文却没有将其阐述清楚。作者呼吁研究员和实践者通过阐明那些他们价值观觉得有害的系统行为，来明确他们的规范论证，无论这些价值观看起来多么明显。</p>
+<p>作者进一步认为，这些论证应该考虑到之前提到的语言和社会层级之间的关系。首先，这些关系提供了一个基础，再次基础上，我们可以更好地进行规范论证。例如，有些系统行为可能是有害的，正是因为它们维持着社会层级。其次，如果分析 “bias” 的工作被重新调整为弄明白社会层级、语言意识形态和NLP 系统是如何共同运作的，并且如果我们不能从以开始就考虑到社会层级和语言意识形态是如何决定我们所说的 “bias” ，那这项工作将是不完整的。为此，作者提出以下具体研究问题作为切入点：</p>
+<ul>
+<li><strong>哪种系统行为被描述为 ”bias“ ？它们潜在的来源是什么（例如，性别假设、任务定义、数据）？</strong></li>
+<li><strong>这些系统行为以何种方式造成损害，对谁，为什么？</strong></li>
+<li><strong>哪些社会价值观（明显或不明显）加强了这种 ”bias“ 的概念？</strong></li>
+</ul>
+</li>
+<li><font color=blue size=4>通过实际生活中受 NLP 影响的社区成员的生活经历来检验语言在实际中的使用，询问并重新构想技术人员和这样的社区之间的关系。</font>
+
+<p>最后，作者的观点建立在对语言和社会层级关系之间的更宽广的认识上，提出了在实践种检验语言使用的几个方向。这里主要关注两点，首先，因为语言的位置是必然的，因为不同的社会位置的社会群体有不同的生活经历，特别是储于多个压迫加差点的群体，作者建议研究人员和从业者集中分析那些生活经历受到这些 NLP 系统影响的社区成员，分析这里面的 NLP 系统中的 ”bias“；其次，作者建议对技术人员和这类群体之间的权力关系进行审查和重新构想。研究人员指出，算法公正技术通过提出递增的技术性缓解（例如，搜集新的数据集或训练更好的模型），通过假设自动化系统应该继续存在而不是询问它们是否应该被建立，以及将开发和部署的决策维持在技术人员的掌握中，来维持这种权力关系。</p>
+<p>在研究这些方向时，有许多学科可供研究人员和实践者借鉴。<font face="STCAIYUN">作者这里列举了一些相关领域的研究成果和研究动向。</font></p>
+<p>作为接触受 NLP 系统影响的社区的七点，作者提供了以下具体的研究问题：</p>
+<ul>
+<li>社区如何发觉 NLP 系统的?他们会抵制吗?如果是，是怎么抵制的?</li>
+<li>如果 NLP 系统不能很好地工作，社区要承担哪些额外的成本？</li>
+<li>NLP 系统是否会将权力转移到压迫性的机构（例如，通过实现社区不想要的预测、基于语言的资源或激活的不公平分配），还是远离这些机构？</li>
+<li>谁参与了 NLP 系统的开发和部署？决策过程如何维持技术人员和受 NLP 系统影响的社区之间的权力关系？这些过程能被改变，用来重新构想这些关系吗？</li>
+</ul>
+</li>
+</ol>
+<h4 id="Case-study"><a href="#Case-study" class="headerlink" title="Case study"></a>Case study</h4><p>为了距离说明这些建议，作者提供了一个关于非洲裔美国人英语 (AAE ~这种语言变体有许多不同的名称，现在通常被称为非裔美国英语、非裔美国方言AAVE或非裔美国语言AAL~) 的案例研究。</p>
+<p>对 AAE 的上下文的 “bias” 分析表明，词性标注、语言识别系统和依存分析的效果在包含 AAE 相关特征的文本上都不如没有这些特征的文本上好，并且 toxicity detection 系统将含有 AAE 相关特征的推文在攻击性的得分上要高于不含 AAE 特征的推文（这里引用了四篇论文）。这些论文对于强调 AAE 是一种语言变体起到了至关重要的作用。然而，他们没有以同样的方式将 ”racial bias“ 概念化，四篇论文中第一篇仅关注包含 AAE 相关特征的文本和不包含这些特征的文本在系统性能表现上的差异。相比之下，后两篇论文也关注了系统性能的差异，但是通过以下额外的推理来激发这种关注：如果包含于 AAE 相关特征的推文被认为比不包含这些特征的推文耕局攻击性，那么这可能 a) 对AAE 产生负面看法；b) 导致包含这些特征的推文被不成比例地移除，阻碍了发言中参与在线平台，自由使用 AAE 进行发言的空间； c) 导致 AAE 说话者不得不改变他们的语言习惯，以避免受到负面看法或被推文被删除，这使得他们承担了额外的花费；</p>
+<p>更重要的是，这些论文都没有涉及到关于 AAE 的文献，及美国的种族等级制度以及种族语言学的意识形态。由于没有接触到这些文献，因此将 AAE 简单地当作许多 <strong>non-Penn Treebank varieties of English</strong> 中的一种，在 AAE 的上下文中分析 NLP 系统的 ”bias“ 无法在世界上定位这些系统。谁是 AAE 的使用者？他们如何看待？作者认为，AAE 作为一种语言变体，不能和它的使用者(主要是经历了系统性的烦黑人种族主义的美国黑人群体) 分离，并且语言意识形态强化和证明了种族等级制度。</p>
+<p>即使经过社会语言学家几十年的努力使 AAE 合法化，但是它仍被认为是不好的英语，并且它的使用者依旧被视为语言上有缺陷 (一种被称为 deficit 的观点)。这种观点无视 AAE 已经具有规则约束和语法约束，这种观点属于更广泛的种族语言意识形态，这也可能会造成分配性伤害；AAE 的使用者经常因为不遵守主流语言习惯而受到惩罚，包括教育系统中，当寻找住所或在司法系统中，他们的证词经常被误解，或者更糟，直接被怀疑。这些种族语言意识形态认为，种族化的社区需要语言干预，如语言教育项目，在这些项目中，如果社区适应主流语言实践，这些伤害和其他伤害就可以减少。$\cdots$</p>
+<p>通过阅读上述文献，我们可以发现那些被称为 ”bias“ 的系统行为，为规范论证提供基础。研究者和从业者应该关注 toxicity detection 系统中的种族偏见，不仅仅因为性能差异会损害系统性能，而且要考虑到它们重现长起对 AAE 使用者的歧视和权力被剥夺的不公正性。在重新污名化 AAE 的过程中，它们在线了语言意识形态，在这些意识形态中，AAE 被认为是不符合语法的、未教化的甚至是无礼的。反过来，这些意识形态又长期助长了语言其实，并未长期存在的种族等级制度提供了理由。</p>
+<p>作者强调，接触有关 AAE、美国种族等级以及种族以实形态相关的文献，可以产生新的关联路线。这些路线包括了在开发和部署 NLP 系统的过程中避免产生歧视和剥夺权力的方法，并致力于在实践中使用 AAE。本文献还可以帮助研究者和从业者解决NLP系统可能产生的配置危害，并确保即使是善意的NLP系统也不会将种族化社区定位为需要语言干预或适应主导语言实践的群体。最后，那些希望设计初更好的系统的研究人员和实践者还可以借鉴越来越多的反种族主义语言教育法，以及前文叙述的关于重新构想技术人员和受影响的社区之间的权力关系的工作。</p>
+<h4 id="Conclusion-1"><a href="#Conclusion-1" class="headerlink" title="Conclusion"></a>Conclusion</h4><p>作者通过调查146篇分析 NLP 系统中的 “bias” 的论文，发现了这些论文的动机通常含糊不清，缺乏规范的推理，他们提出的技术和他们的动机不匹配，并且没有接触到 NLP 之外的相关文献。之后作者提出了三个建议来指导这一领域的研究工作的后续进行。</p>
+<font face="楷体">    之前我在这方面的调研工作中，也感受到了本文中作者提到的一些问题，不同的论文对于 “bias” 的定义存在差异，甚至彼此矛盾，有些论文认为是数据分布所致，有些论文认为是机器学习到了人类社会中的刻板印象，而他们提出的解决方法也有很大的差异。这篇综述，最大的贡献除了所提出的规范化建议，还有一点就是对之前的146篇论文的一个归类，六种类别的划分，尤其是区分开了分配性损害和表征性损害，后续的研究应该细致区分开这两点。</font>
+
+<font face="楷体">    此外，作者提出的建议中的第一点-结合其它领域的相关文献和第三点-要求和NLP系统中“bias”的受损害人群进行沟通，这一点可能太过超前，我觉得从NLP技术的角度来看，能够做到第二点-清晰地阐述动机和理由，更符合NLP技术当前发展的进度，虽然脱离第一点和第三点去做研究容易脱离实际问题，但是考虑地太全面反而难以推进技术的发展，我觉得可以根据某些大神总结出来的一些值得研究的点，结合NLP中的实际任务来跟进研究即可。</font>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/bias/">bias</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/10/%E5%AF%B9%E6%8A%97%E8%BF%87%E6%BB%A4%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%AD%E7%9A%84%E5%81%8F%E5%B7%AE/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">对抗过滤数据集中的偏差</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/10/Bias-in-NLP-Debiasing-methods/">
+                        <span class="hidden-mobile">Bias in NLP & Debiasing methods</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

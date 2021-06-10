@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&quot;auto&quot;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>Bias in NLP &amp; Debiasing methods - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Bias in NLP & Debiasing methods">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-06-10 10:07" pubdate>
+        2021年6月10日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      47
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Bias in NLP &amp; Debiasing methods</h1>
+            
+            <div class="markdown-body">
+              <h2 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h2><p>主要关注社会偏见在NLP 的<strong>word embedding </strong>及 <strong>sentence embedding</strong> 中的体现，其中前者的研究出现较早，目的是探究各类词向量中存在的社会偏见（以性别偏见为主），并寻找一种去偏方法来消解或减弱这种社会偏见与刻板印象；而后者则是探究BERT等上下文编码器出现后，NLP下游任务中更多地采用了这种句子级表示的编码方法，这种方法可能依旧存在的社会偏见，并寻找方法取消减这种社会偏见。</p>
+<p><strong>社会偏见在NLP中的影响</strong>：以<strong>Double-Hard Debias: Tailoring Word Embeddings for Gender Bias Mitigation</strong> 一文中提到的指代消解问题为例，“医生雇佣秘书是因为他的病人很多”，“医生雇佣秘书是因为她的病人很多”，两句话中的代词都应该指医生，但是由于词向量中存在医生大多为男性、秘书多为女性这种社会刻板印象，因此模型很容易将第二句话中的她认为是代指秘书。词向量中的性别偏见，主要是源于使用人类社会中存在这种社会偏见的语料训练所致，这些偏见被模型敏锐地捕捉到，然而这些偏见从客观角度来看，并不应该被下游任务所利用，这是将人类社会的陋习教给机器。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200814104321564.png" srcset="/img/loading.gif" lazyload alt="image-20200814104321564"></p>
+<p>不同的任务中对于性别或其它社会偏见造成的影响不同，社会偏见除了来自于人类社会中固有的偏见被机器敏锐地捕捉到设置扩大化，还有一个原因是数据集中男行相关的语料较多、女性相关语料较少的数据分布不均问题。</p>
+<h2 id="研究内容"><a href="#研究内容" class="headerlink" title="研究内容"></a>研究内容</h2><ul>
+<li>词embedding 或句子 embedding 事前或事后去偏；</li>
+<li>探究这些社会偏见在各类 NLP 任务中的影响，并对其评估；</li>
+<li>针对具体任务进行偏见消减；</li>
+</ul>
+<p><strong>趋势</strong>：第一点提出较早，但是进展并不大，从ACL 2020 唯有的两篇去偏的文章提出的算法来看，这一点的研究还在对16年提出的 Hard Debias 进行扩展，18、19年的关于去偏的文章也主要关注在事前去偏以及事后去偏的一些改进；第二、三点的研究热度要比第一点稍高（ACL 2020 有六七篇论文是讨论这些内容的），主要就是探究 bias 在embedding中的影响、对下游任务的影响，以及如何取评估这种影响；针对具体任务的研究，机器翻译领域稍多，其它领域较少；</p>
+<h2 id="评测数据及方法"><a href="#评测数据及方法" class="headerlink" title="评测数据及方法"></a>评测数据及方法</h2><h3 id="WEAT"><a href="#WEAT" class="headerlink" title="WEAT"></a>WEAT</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1608.07187">Semantics derived automatically from language corpora contain human-like biases （2016）</a>一文中提出的 <strong>Word Embedding Association Test</strong> 方法。</p>
+<p>通过置换检验的方法来证明和量化偏差：考虑两个目标词集合（例如，<code>程序员、工程师、科学家……</code> 和 <code>护士、老师、图书管理员……</code>）以及两个属性词集合（例如，<code>man、male……</code> 和 <code>woman、female……</code>）零假设是指两组目标词与两组属性词的相对相似度没有差异。置换检测 通过计算随机置换一个属性词会产生可观察到的样本均值差异 的可能性 来测量零假设的似然率。</p>
+<p>令 X 和 Y 分别代表相同大小的两个目标词集合，A、B 则为属性词集合，令 $cos(\vec a,\vec b)$ 代表两个向量之间的角度。检测统计量为：</p>
+<script type="math/tex; mode=display">
+s(X,Y,A,B)=\sum_{x\in X}s(x,A,B)-\sum_{y\in Y}s(y,A,B) \\
+where \quad s(w,A,B)=mean_{a\in A}cos(\vec w,\vec a)-mean_{b\in B}cos(\vec w,\vec b)</script><p>换句话说，$s(w,A,B)$测量了词 w 和属性之间的关联性，$s(X,Y,A,B)$ 测量了两个目标词集合与属性词之间的关联度差异；</p>
+<p>令 $\{(X_i,Y_i)\}_i$ 代表 $X \cup Y$ 分成两个带线啊哦相等的集合的所有划分，置换检测的单方面 p 值为：</p>
+<script type="math/tex; mode=display">
+Pr_i[s(X_i,Y_i,A,B)>s(X,Y,A,B)]</script><p>效应量为：</p>
+<script type="math/tex; mode=display">
+\frac{mean_{x\in X}s(x,A,B)-mean_{y\in Y}s(y,A,B)}{std-dev_{w\in X\cup Y}s(w,A,B)}</script><p>它是对两个分布(目标和属性之间的关联)的分离程度的规范化度量，更大的效应量反映了更严重的偏差。</p>
+<h3 id="SEAT"><a href="#SEAT" class="headerlink" title="SEAT"></a>SEAT</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1903.10561.pdf">On Measuring Social Biases in Sentence Encoders (2019)</a> ~这篇文章的附录有很详细的关于一些测试的说明，以及大量的例子，可以帮助理解bias的问题~一文中提出的与<strong>WEAT</strong> 类似的方法，用于句子 embedding 的偏差检测。</p>
+<p>为了将一个词级别的检测扩展到句子上下文中，<strong>SEAT</strong> 将一个词放入几个缺乏语义(semantically bleached) 的句子模板中，例如<code>This is &lt;word&gt;.</code>, <code>&lt;word&gt; is here.</code>, <code>This will &lt;word&gt;.</code>等，这些模板大量使用指示语，除了插入其中的 词项 外，没有什么特别的意思。例如：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200814220934848.png" srcset="/img/loading.gif" lazyload alt="image-20200814220934848"></p>
+<h3 id="其它的一些检测方法及数据集"><a href="#其它的一些检测方法及数据集" class="headerlink" title="其它的一些检测方法及数据集"></a>其它的一些检测方法及数据集</h3><ul>
+<li><strong>Equity Evaluation Corpus (EEC):</strong> 用于检测情绪分析模型中的某些种族和性别偏见的语料库；<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1805.04508；">https://arxiv.org/abs/1805.04508；</a></li>
+<li><strong>WinoBias：</strong> 用于测试指代消解中存在的性别偏见问题的基准数据集；<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/N18-2003.pdf；">https://www.aclweb.org/anthology/N18-2003.pdf；</a></li>
+<li><strong>WiKiGenderBias</strong>：用于评测关系抽取任务中的性别偏见问题；</li>
+<li><strong>WinoMT</strong>：机器翻译中的性别偏见评估数据集；</li>
+</ul>
+<h2 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h2><h3 id="Hard-Debias"><a href="#Hard-Debias" class="headerlink" title="Hard Debias"></a>Hard Debias</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1607.06520.pdf">Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings（2016）</a> 一文中提出的词向量<strong>事后去偏</strong>方法：</p>
+<ol>
+<li><p>首先定义子空间 <script type="math/tex">B=\{b_1,\dots,b_k\}\subset \mathbb{R}^d</script> 其中的向量彼此正交，当 k=1 时，这个子空间就时简单代表一个方向，向量 v 在子空间 B上的投影的定义为：$v_B=\sum_{j=1}^k(v\cdot b_j)b_j$ ; 之后定义一个集合 $D_1,D_2,\dots,D_n\subset W$, W 为所有词的集合，$D_i$ 是{girl, boy}, {man, woman}形式的词对，令$\mu_i := \sum_{w\in D_i}\vec w / |D_i|$，对这些平均向量集 $C:=\sum_{i=1}^n \sum_{w\in D_i}(\vec w -\mu_i)^T(\vec w-\mu_i).|D_i|$ 进行奇异值分解 SVD(C) ，取前 k 行作为 bias 子空间B。</p>
+</li>
+<li><p>额外定义一些需要中和处理的词表（性别中性词语，例如“医生”、“教师”等一些不应该特定于性别的词语）$N\subseteq W$ 和 均衡集合族 $\varepsilon =\{E_1,E_2,\dots,E_m\}$，对于每个词 $w\in N$，对其 re-embedded得到 $\vec w:=\vec w-\vec w_B)/||\vec w-\vec w_B$。</p>
+<p>对于$E\in \varepsilon$ ,令：</p>
+<script type="math/tex; mode=display">
+\mu:=\sum_{w\in E }w/|E|</script><script type="math/tex; mode=display">
+v:=\mu-\mu_B</script><script type="math/tex; mode=display">
+For\ each\ w\in E,\ \vec w:=v+\sqrt{1-||v||^2}\frac{\vec w_B-\mu_B}{||\vec w_B-\mu_B||}</script></li>
+</ol>
+<h3 id="GN-Glove-Gender-Neutral"><a href="#GN-Glove-Gender-Neutral" class="headerlink" title="GN-Glove (Gender-Neutral)"></a>GN-Glove (Gender-Neutral)</h3><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1809.01496">https://arxiv.org/abs/1809.01496</a> EMNLP 2018</p>
+<p>大致思想是根据Glove 的思想，结合<strong>性别中立</strong>的理念重新设计训练了 Glove，在某些维度上消除了性别信息，中和其它维度，并属于<strong>事前去偏方法</strong>；具体介绍可参考一篇知乎博客（GN-Glove 性别中立的词嵌入学习 - 论智的文章 - 知乎 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44794638）">https://zhuanlan.zhihu.com/p/44794638）</a></p>
+<h3 id="GP-Glove-Gender-preserving"><a href="#GP-Glove-Gender-preserving" class="headerlink" title="GP-Glove (Gender-preserving)"></a>GP-Glove (Gender-preserving)</h3><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1906.00742.pdf">https://arxiv.org/pdf/1906.00742.pdf</a> ACL 2019</p>
+<p>GP-Glove 保留了无歧视的性别信息，同时去除了刻板的歧视性性别偏见。文中考虑了四种信息：<em>feminine</em>、<em>masculine</em>、<em>gender-neutral</em>、<em>stereotypical</em>，（举一些例子，前两类：女服务员、家庭主妇、congressman、businessman；gender-neutral：作曲家、社会名流、预备演员；stereotype：保姆、housekeeper、colonel（陆军上校）、captain等）代表了性别于偏见之间的关系，并提出了一种去偏方法：（a）保留 <em>feminine</em> 与 <em>masculine</em> 词语中的性别相关的信息；（b）保留 <em>gender-neutral</em> 词的中立性；（c）去除 <em>stereotypical</em> 词语的偏见。</p>
+<h3 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h3><p>通过将数据集中关于性别的实体替换为表示相反性别的单词，然后对原始数据和被交换数据的并集同时训练。（WinoBias那篇文章提出的一个简单方法）</p>
+<h3 id="对抗"><a href="#对抗" class="headerlink" title="对抗"></a>对抗</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1808.06640.pdf">Adversarial Removal of Demographic Attributes from Text Data</a> 一文中探讨了使用对抗训练来移除encoder中包含的人口统计信息的效果，作者发现对抗训练并不能比直接训练的post-hoc 分类器效果好。并得出了一个结论：不要依赖对抗训练来实现对敏感特征的不变表示。</p>
+<blockquote>
+<p>Do not rely on the adversarial training to achieve invariant representation to sensitive features.</p>
+</blockquote>
+<p>这类方法中，首先对输入进行编码，然后训练两个分类器，一个目标预测器使用编码的输入来预测目标NLP任务，另一个 protected-attribute 预测器，利用编码后的输入来预测保护的属性，两个分类器联合学习，使目标任务预测器准确率最大，而后者准确率最小化。</p>
+<h2 id="ACL-2020-上的几篇文章"><a href="#ACL-2020-上的几篇文章" class="headerlink" title="ACL 2020 上的几篇文章"></a>ACL 2020 上的几篇文章</h2><h3 id="句向量事后去偏"><a href="#句向量事后去偏" class="headerlink" title="句向量事后去偏"></a>句向量事后去偏</h3><p><a target="_blank" rel="noopener" href="https://w-lw.github.io/2020/09/18/%E5%8F%A5%E5%AD%90%E5%8E%BB%E5%81%8F/">https://w-lw.github.io/2020/09/18/%E5%8F%A5%E5%AD%90%E5%8E%BB%E5%81%8F/</a></p>
+<h3 id="词向量事后去偏"><a href="#词向量事后去偏" class="headerlink" title="词向量事后去偏"></a>词向量事后去偏</h3><p>Link: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2005.00965">Double-Hard Debias: TailoringWord Embeddings for Gender Bias Mitigation</a></p>
+<p>本文关注的是词向量的性别去偏，依旧采用的是与 <strong>Hard Debias</strong> 方法类似的 事后(post-hoc) 去偏。</p>
+<p>文中提出的 <strong>Double-Hard Debias</strong> 方法是针对 <strong>Hard Debias</strong> 方法未能考虑到词频对于词向量的影响——词频会扭曲性别偏置子空间的方向，使得<strong>Hard Debias</strong> 方法效果有限。<strong>Double-Hard Debias</strong> 包括两个步骤：首先，通过减去词频相关的分量，将词向量投影到一个过渡子空间中，减轻词频对于性别子空间的影响；之后再使用<strong>Hard Debias</strong> 方法减轻性别偏见。</p>
+<p>下图说明了，当词频改变之后，不同的 bias pair 之间的余弦相似度会受到影响，这也证明了词频在性别去偏中有不可忽略的影响。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813183937213.png" srcset="/img/loading.gif" lazyload alt="image-20200813183937213"></p>
+<p><strong>方法</strong>：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813205102245.png" srcset="/img/loading.gif" lazyload alt="image-20200813205102245"></p>
+<p><strong>2</strong>：这一步是计算所有embedding 的平均；（里面的 V 就是 W，这里应该是写错了）</p>
+<p><strong>3：</strong> 这一步对去中心化后的所有词向量做PCA，得到 d 个 u 向量（为何取d 个不太清楚，引文中也是取d），</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813205653825.png" srcset="/img/loading.gif" lazyload alt="image-20200813205653825"></p>
+<p><strong>5~12：</strong>：通过遍历每个 ui ，计算出去掉该 ui 后的去偏效果；</p>
+<p><strong>14-16：</strong> 去掉去偏效果最好的那个 ui；（引文中是设置了一个参数 D，去掉前 D 个 ui 向量，这篇文章则是通过遍历找到影响最大的那个）</p>
+<p><strong>18：</strong> <strong>Hard Debias</strong>；</p>
+<p><strong>实验</strong></p>
+<p><strong>指代消解实验</strong></p>
+<p>WinoBias数据集</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813215433586.png" srcset="/img/loading.gif" lazyload alt="image-20200813215433586"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813215524018.png" srcset="/img/loading.gif" lazyload alt="image-20200813215524018"></p>
+<p>在 WinoBias 数据集上的结果如下：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813215224560.png" srcset="/img/loading.gif" lazyload alt="image-20200813215224560"></p>
+<p>Diff-1 越小代表模型受到性别偏差的影响越小。</p>
+<p><strong>The Word Embeddings Association Test(WEAT)</strong></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813221051109.png" srcset="/img/loading.gif" lazyload alt="image-20200813221051109"></p>
+<p><strong>Neighborhood Metric</strong></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813221051109.png" srcset="/img/loading.gif" lazyload alt="image-20200813221224781"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200813221828723.png" srcset="/img/loading.gif" lazyload alt="image-20200813221828723"></p>
+<h3 id="关系抽取中的性别偏见"><a href="#关系抽取中的性别偏见" class="headerlink" title="关系抽取中的性别偏见"></a>关系抽取中的性别偏见</h3><p>Link: <a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/2020.acl-main.265/">Towards Understanding Gender Bias in Relation Extraction</a> </p>
+<h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>现有的（Neural Relation Extraction）NRE系统主要关注在提高准确性上，却没有评估NER系统中存在的社会偏见。本文提出了一个数据集 <strong>WiKiGenderBias</strong>，由超过45,000 个句子（包含10%的人工标注的测试集），用于分析关系抽取系统中的性别偏见。作者发现，在提取某些上位关系（例如职业）时，NRE系统在目标实体的性别不同是，表现也存在差异，然而在提取诸如生日、出生此等关系时，这种差异并不会出现。作者还分析了现有的偏差消解技术，例如姓名隐匿化、词嵌入去偏和数据增强，在报错测试性能和减少偏差方面对NRE系统的影响。不幸的是，由于NRE模型严重依赖 surface level cues，作者发现现有的偏差消解技术对NRE由负面影响，作者的分析为未来量化和减轻NRE偏差奠定了基础。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200815200837708.png" srcset="/img/loading.gif" lazyload alt="image-20200815200837708"></p>
+<p>大致看了看文中的图表，这篇文章主要就是提出关系抽取中也存在性别bias 的问题， 文中提出了一个可用于测试这个问题的数据集，并用了一些常用的方法（平衡两种性别的训练数据量、数据增强、词向量去偏）进行去偏实验，实验效果并不理想，大部分技术都会导致模型性能下降，而且没有一种技术能够有效缩小性别之间的性能差距。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200815201622027.png" srcset="/img/loading.gif" lazyload alt="image-20200815201622027"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200815202048063.png" srcset="/img/loading.gif" lazyload alt="image-20200815202048063"></p>
+<h3 id="Social-Bias-Frames-Reasoning-about-Social-and-Power-Implications-of-Language"><a href="#Social-Bias-Frames-Reasoning-about-Social-and-Power-Implications-of-Language" class="headerlink" title="Social Bias Frames: Reasoning about Social and Power Implications of Language"></a>Social Bias Frames: Reasoning about Social and Power Implications of Language</h3><p>LINK：<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/2020.acl-main.486/">Social Bias Frames: Reasoning about Social and Power Implications of Language</a></p>
+<h3 id="机器翻译中的性别偏见"><a href="#机器翻译中的性别偏见" class="headerlink" title="机器翻译中的性别偏见"></a>机器翻译中的性别偏见</h3><h4 id="Link：Reducing-Gender-Bias-in-Neural-Machine-Translation-as-a-Domain-Adaptation-Problem"><a href="#Link：Reducing-Gender-Bias-in-Neural-Machine-Translation-as-a-Domain-Adaptation-Problem" class="headerlink" title="Link：Reducing Gender Bias in Neural Machine Translation as a Domain Adaptation Problem"></a>Link：<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/2020.acl-main.690/">Reducing Gender Bias in Neural Machine Translation as a Domain Adaptation Problem</a></h4><h4 id="摘要-1"><a href="#摘要-1" class="headerlink" title="摘要"></a>摘要</h4><p>由于涉及女性的句子通常比涉及男性的句子要少，在神经机器翻译中，性别偏见已经被证明会降低翻译质量，特别是当目的语言有语法上的性别时。最近的 WinoMT 挑战集可以直接用于测试这些问题的影响。理想情况下，我们可以通过简单地在训练前消除所有数据的偏见来减少偏见，但是这本身就很有挑战性。本文不是试图创建一个平衡的数据集，而是在一个规模较小的可信任的性别平衡的数据集上使用迁移学习。这种方法在性别去偏问题上提供了强大且一致的提升。</p>
+<p>用的数据集是下面那篇文章中提出来的WinoMT。</p>
+<h4 id="Link-Evaluating-Gender-Bias-in-Machine-Translation"><a href="#Link-Evaluating-Gender-Bias-in-Machine-Translation" class="headerlink" title="Link: Evaluating Gender Bias in Machine Translation"></a>Link: <a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/P19-1164/">Evaluating Gender Bias in Machine Translation</a></h4><p>这篇文章则是提出了一个用于分析机器翻译中的性别偏见问题的挑战集 <strong>WinoMT</strong>和评估协议。</p>
+<h4 id="Link：Gender-Bias-in-Multilingual-Embeddings-and-Cross-Lingual-Transfer"><a href="#Link：Gender-Bias-in-Multilingual-Embeddings-and-Cross-Lingual-Transfer" class="headerlink" title="Link：Gender Bias in Multilingual Embeddings and Cross-Lingual Transfer"></a>Link：<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/2020.acl-main.260.pdf">Gender Bias in Multilingual Embeddings and Cross-Lingual Transfer</a></h4><p>这篇文章则是研究了多语言嵌入中的性别偏见，以及它是如何影响到NLP应用中的迁移学习的。作者为偏差分析创建了一个多语言数据集，并从内在和外在两个方面提出了集中量化多语言表示偏差的方法。</p>
+<h3 id="通过后验正则化的方法减小性别偏见在分布中的扩大"><a href="#通过后验正则化的方法减小性别偏见在分布中的扩大" class="headerlink" title="通过后验正则化的方法减小性别偏见在分布中的扩大"></a>通过后验正则化的方法减小性别偏见在分布中的扩大</h3><p>Link：<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/2020.acl-main.264/">Mitigating Gender Bias Amplification in Distribution by Posterior Regularization</a></p>
+<p>摘要：一些研究表明，机器学习技术无意中捕获了隐藏在语料库中的社会偏见，并进一步放大了它。然而，这些分析只是基于模型顶层的预测而得到的。本文作者从分布的角度研究了性别偏见放大问题，并证明偏见在预测的标签概率分布上被放大了。作者进一步提出了一种基于厚颜正则化的偏差消解方法，在性能损失很小的情况下，该方法几乎可以消除分布中的偏见放大。该研究为理解偏见放大提供了线索。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/image-20200815213909263.png" srcset="/img/loading.gif" lazyload alt="image-20200815213909263"></p>
+<h2 id="一些相关的文章"><a href="#一些相关的文章" class="headerlink" title="一些相关的文章"></a>一些相关的文章</h2><h3 id="Nurse-is-Closer-to-Woman-than-Surgeon-Mitigating-Gender-Biased-Proximities-in-Word-Embeddings"><a href="#Nurse-is-Closer-to-Woman-than-Surgeon-Mitigating-Gender-Biased-Proximities-in-Word-Embeddings" class="headerlink" title="Nurse is Closer to Woman than Surgeon? Mitigating Gender-Biased Proximities in Word Embeddings"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2006.01938">Nurse is Closer to Woman than Surgeon? Mitigating Gender-Biased Proximities in Word Embeddings</a></h3><p>来源：TACL 2020</p>
+<p>文章题目风格与经典的 Hard Debias 那篇文章类似；</p>
+<p><strong>摘要</strong>：作者认为现有的词嵌入后处理的去偏方法无法消除隐藏在词向量空间位置中的性别偏见。文中提出了一种 <strong>RAN-Debias</strong> 方法，它不仅消除了词向量中存在的偏见，还改变了相邻向量的空间分布，在保持最小语义偏移的同时实现了 bias-free 的设定。此外，文中还提出了一种新的偏见评估方法-<strong>Gender-based Illicit Proximity Estimate (GIPE)</strong>，它能衡量性别偏见所导致的词向量不适当接近的程度。</p>
+<h3 id="Black-is-to-Criminal-as-Caucasian-is-to-Police-Detecting-and-Removing-Multiclass-Bias-in-Word-Embeddings"><a href="#Black-is-to-Criminal-as-Caucasian-is-to-Police-Detecting-and-Removing-Multiclass-Bias-in-Word-Embeddings" class="headerlink" title="Black is to Criminal as Caucasian is to Police: Detecting and Removing Multiclass Bias in Word Embeddings"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1904.04047">Black is to Criminal as Caucasian is to Police: Detecting and Removing Multiclass Bias in Word Embeddings</a></h3><p>来源：NAACL2019</p>
+<p>标题风格同上</p>
+<p>这篇文章就是针对人种、宗教等多类别设置的偏见，是对Hard Debias 一文工作的扩展。文中提出了一种新的评估多类去偏的方法。（这个方法在之前ACL 2020的那篇句子去偏的文章种用到了）</p>
+<h3 id="Assessing-Demographic-Bias-in-Named-Entity-Recognition"><a href="#Assessing-Demographic-Bias-in-Named-Entity-Recognition" class="headerlink" title="Assessing Demographic Bias in Named Entity Recognition"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2008.03415">Assessing Demographic Bias in Named Entity Recognition</a></h3><p>来源：AKBC workshop 2020</p>
+<p>探究了NER种关于人口统计偏见的问题；</p>
+<h3 id="Causal-Mediation-Analysis-for-Interpreting-Neural-NLP-The-Case-of-Gender-Bias"><a href="#Causal-Mediation-Analysis-for-Interpreting-Neural-NLP-The-Case-of-Gender-Bias" class="headerlink" title="Causal Mediation Analysis for Interpreting Neural NLP: The Case of Gender Bias"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2004.12265">Causal Mediation Analysis for Interpreting Neural NLP: The Case of Gender Bias</a></h3><p>来源：arxiv 2004</p>
+<p>从因果中介分析理论的角度来解释神经模型，并将该方法用在预训练的 Transformer 语言模型上，对性别偏见进行分析；</p>
+<h3 id="…"><a href="#…" class="headerlink" title="…"></a>…</h3>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/bias/">bias</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/10/A-survey-of-bias-in-NLP/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">A survey of bias in NLP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/08/hello-world/">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

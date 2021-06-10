@@ -1,0 +1,489 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&quot;auto&quot;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>句子去偏 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="句子去偏">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-06-10 11:37" pubdate>
+        2021年6月10日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      30
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">句子去偏</h1>
+            
+            <div class="markdown-body">
+              <h3 id="Towards-Debiasing-Sentence-Representations"><a href="#Towards-Debiasing-Sentence-Representations" class="headerlink" title="Towards Debiasing Sentence Representations"></a>Towards Debiasing Sentence Representations</h3><p>文章链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2007.08100">https://arxiv.org/abs/2007.08100</a> ，来源 ACL2020</p>
+<h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>先前的研究已经揭示出在广泛使用的词嵌入中存在社会偏见，包括性别、种族、宗教以及其它社会结构。虽然以及有一些方法被提出用于消除词级别的偏见，但考虑到最近趋向于使用使用上下文的句子表示（例如ElMo、BERT等），因此有必要对句子级的表示进行去偏。本文捉着研究了句子级表示中社会偏见的存在，并提出了一种减少偏见的方法——SENT-DEBIAS。实验表明，SENT-DEBIAS 在保留了句子级下游任务（比如情感分类、语言可接受性和NLU）表现的同时，在消除偏见方面也是有效的。</p>
+<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>由于两个方面的原因句子级表示的去偏比较困难。首先，对于这些 SOTA 的基于句子嵌入的模型完全重新训练通常是不可行的，这些模型的训练不同于训练词向量只需要花费几个小时，通常它们需要在上百台机器上训练几周时间。当我们发现数据中有一类偏见未考虑到时，重新训练是非常困难的。因此，本文将重点放在事后（post-hoc）去偏技术上，即：在这些句子表示用于下游任务之前，为它们添加一个训练后（post-training）去偏步骤。其次，句子在有单个单词组成的方式上有很大的差异性，这种差异性是由话题、个体、环境、甚至口头和书面文本之间的差异等多种因素导致的。因此，很难讲传统的词级别去偏方法扩展到句子中。</p>
+<p>在本文中，作为将去偏方法推广到句子表示的一个关键步骤，作者捕捉了在自然句子中使用偏见属性词的各种方式。</p>
+<blockquote>
+<p>This is performed by contextualizing bias-attribute words using a diverse set of sentence templates from various text corpora into bias-attribute sentences.</p>
+</blockquote>
+<p>本文提出<strong><em>SENT-DEBIAS</em></strong>方法，为包括性别和宗教在内的二元以及多元偏见属性进行去偏。该方法的关键点是 <em>contextualization</em> 步骤，它通过使用文本语料库中不同的句子模板集，将偏见属性词转化成偏见属性句。实验结果证明了在估计句子表征的偏置子空间时使用大量不同的句子模板的重要性。</p>
+<h4 id="句子表示去偏"><a href="#句子表示去偏" class="headerlink" title="句子表示去偏"></a>句子表示去偏</h4><p>本文提出的 <strong><em>SENT-DEBIAS</em></strong> 句子表征去偏方法由四个步骤构成：1）定义那些表现出偏见属性的词；2）将这些词置于语境中，形成偏见属性的句子以及随后的句子表征；3）估计句子表征的偏置子空间；4）通过去除这个偏置子空间上的投影来消除普通句子的偏见；</p>
+<p>方法如算法1所示：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222339.png" srcset="/img/loading.gif" lazyload alt="image-20200802120630486"></p>
+<ol>
+<li><p><strong>定义偏见属性</strong>：第一步涉及到识别偏见属性和定义一组偏见属性词来表示这些属性。例如，在描绘性别偏见的特征时，使用单词对<em>(man，woman)，(boy，girl)</em>来表示性别。在估计Jewish、Christian、Muslim三类宗教的子空间时，使用元组<em>(Judaism, Christianity, Islam), (Synagogue, Church, Mosque)</em>。每个元组应该包含该偏见属性下具有同等意义的单词。通常来说，对于一个 d 类的偏见属性，数据集中的单词集合 $\mathcal{D}=\{(w_1^{(i)},\dots,w_d^{(i)})\}_{i=1}^m$ 包含 m 个词条，每个词条由一个 d 元组 $(w_1,\dots,w_d)$ 构成，分别代表一种专门的属性。<br><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222354.png" srcset="/img/loading.gif" lazyload alt="image-20200802125928155" style="zoom: 67%;" /><br>现有的研究偏见的方法倾向于在单词级别进行操作，这简化了问题，因为 tokens 的集合是受词汇量限制的。这种简单的方法的有点是利用预定义的词关联集合识别存在的偏见，并利用预定义的偏见单词对估计偏见子空间。然而，句子的潜在数量是无限的，这使得精确地描述存在活不存在偏见的句子变得很困难。因此，直接将这些词转化成句子、从预先训练好的句子编码器中获得一个句子表征并不是一件简单的事情。</p>
+</li>
+<li><p><strong>将单词放入语境中</strong><br><strong><em>SENT-DEBIAS</em></strong> 方法的核心步骤就是将预先定义好的偏见属性单词集根据语境放入到句子中，这样就可以使用句子编码器来获得句子表示。有一种选择是使用简单的基于模板的设计来简化句子编码器于给定的 term 之间的上下文关联性。例如，每个词能够被插入到 <code>This is &lt;word&gt;.</code>，<code>I am a &lt;word&gt;.</code>之类的模板中。本文采用了另一种方法，假设给定的偏见属性（例如性别），一个单个的偏见子空间存在所有可能的句子表征。例如，句子<code>The Boy is coding.</code>, <code>The girl is coding.</code>的偏见子空间应该一样。为了准确地估计这个偏见子空间，应该使用尽可能多样化的句子模板来解释该单词在周围上下文中的所有出现情况。在文中的实验中，作者的经验表明，使用大量的多样化的模板集来估计偏见子空间比使用简单的模板可以提高去偏的效果。<br>为了捕捉句子中语法的变化，作者使用了大规模文本语料库来查找自然出现的句子，这些句子成为了句子模板。为了使用这些模板来生成新的句子，作者将表示单个类的词替换为另一个。例如，一个句子中包含一个男性项 <em>he</em>，它将用于生成新的句子，通过替换将男性项替换成女性项 <em>her</em>。对偏见属性词数据集中所有的单词元组重复这个语境化的过程，最后，将给定的一组偏见属性词至于上下文中形成偏见属性句子。由于每个偏置属性词都有多个模板可以映射，<strong><em>contextualization</em></strong>的过程会产生一个偏见属性句子数据集 $\mathcal{S}$，它的大小要更大：</p>
+<script type="math/tex; mode=display">
+\mathcal{S} = \bigcup_ {i=1} ^{m} CONTEXTUALIZE(w_1^{(i)},\dots,w_d^{(i)})\\
+=\{(s_i^{(i)},\dots,s_d^{(i)})\}_{i=1} ^n,|\mathcal{S}|>|\mathcal{D}|</script><p>其中的 $ CONTEXTUALIZE(w_1^{(i)},\dots,w_d^{(i)})$是一个函数，它返回一组句子，这些句子是通过对单词于文本语料库中自然出现的句子模板进行匹配而得到的。<br>文中使用的文本语料库有五个来源：1）<strong>WikiText-2</strong>：正式书写的维基百科的文章；2）<strong>Stanford Sentiment Treebank</strong>：10000篇极化的电影评论；3）<strong>Reddit</strong>：从与政治、电子和人机关系相关的论坛收集的数据；4）<strong>MELD</strong>：一个来自《老友记》中的大规模多模态多方情感对话数据集；5）<strong>POM</strong>：一组来自1000个人的演讲，涵盖多个话题。表2总结了这些数据集：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222407.png" srcset="/img/loading.gif" lazyload alt="image-20200802162548972"></p>
+</li>
+<li><p><strong>估计偏见子空间</strong></p>
+<p>现在我们已经将 $\mathcal{D}$ 所有 $m$ 个偏置属性词条的 $d$-元组情景化后得到的包含 $n$ 个 $d$-元组的句子集 $\mathcal{S}$，我们将这些句子通过预训练的句子编码器来获得句子表征。假设我们有一个预训练的编码器 $M_\theta$，它的参数为 $\theta$，定义 $\mathcal{R}_j,j\in [d]$ 为一个包含 d-元组中所有第 j 个条目的句子表征的集合，$\mathcal{R}_j=\{M_\theta(s_j^{(i)})\}_{i=1}^n$。每个这样的集合定义了一个向量空间，在这个空间中，特定的偏见存在于它的上下文语境中。例如，在处理二元性别偏见时，$\mathcal{R}_1$定义了代表男性（$\mathcal{R}_2$代表女性）的上下文句子表征的空间。$\mathcal{R}_1$与$\mathcal{R}_2$之间唯一的差异就是其中存在的特定偏见属性。<br>定义集合 j 的平均值为 $\mu_j=\frac{1}{|\mathcal{R}_j|}\sum_{\mathrm{w}\in{\mathcal{R}_j}}\mathrm{w}$。偏见子空间$V=\{v_1,\dots,v_k\}$ 是通过PCA得到的前 k 个分量：</p>
+<script type="math/tex; mode=display">
+V=PCA_k\Bigg(\bigcup_{j=1}^d\bigcup_{\mathrm{w}\in\mathcal{R}_j}(\mathrm{w}-\mu_j)\Bigg)</script><p>k 是超参数，它决定了偏见子空间的维度。直观来看，<strong>V</strong> 表示了最能代表偏见子空间的 top-k 个正交方向。</p>
+</li>
+<li><p><strong>去偏</strong></p>
+<p>给定估计得到的偏见子空间 <strong>V</strong>，我们使用部分版本的 <strong><em>HARD-DEBIAS</em></strong> 算法来去除新句子表征中的偏见，以二元性别偏见为例，<strong><em>HARD-DEBIAS</em></strong> 算法包含两个步骤：</p>
+<ul>
+<li><p><strong>中和(Neutralize)</strong>：通过移除偏见子空间上的投影，从与性别无关且不包含性别偏见的句子中（例如 <em><code>I am a doctor.</code>, <code>That nurse is takign care of the patient.</code></em>) 去除偏见成分。更正式地说，给定一个句子表征 $\mathrm{h}$  以及估计的性别子空间 $V=\{v_1,\dots,v_k\}$，首先获得$\mathrm{h}$ 在偏见子空间 $V$ 中的投影$h_v$ ，去偏的句子表征$\hat{h} = h-h_v$ 。这个结果是一个正交于偏见子空间 $V$ 的向量：</p>
+<script type="math/tex; mode=display">
+h_v = \sum_{j=1}^k \langle{h,v_j}\rangle v_j</script><script type="math/tex; mode=display">
+\hat{h}=h-h_v</script></li>
+<li><p><strong>均衡化(equalize)</strong>：性别表示是居中的，其偏见成分是平等的（例如，man 和 woman 应该有相反方向的偏见成分，但是大小相同）。这确保了任何中性词都是在偏见子空间中的偏见词都是等距的。但是由于其实现的复杂性，本文位考虑处理均衡化这一问题。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h4><p>传统的用来衡量偏见的是词嵌入关联测试（WEAT），它通过比较两组目标词和两组属性词来衡量词嵌入的偏见。例如，要衡量围绕职业的性别的社会偏见，可以使用目标词程序员、工程师、科学家、护士、教师、图书管理员，以及属性词man、male和woman、female。无偏的词表征应该使两个目标词在与两组属性词的相对相似性方面没有差异。</p>
+<p>为了评估句子表征中的偏差，这里使用了May等人的方法，将WEAT扩展到句子编码器联合测试中（Sentence Encoder Association Test，SEAT）。对于一个特定的测试，给定一个单词集，使用基于模板的方法将其转化成句子。然后将WEAT应用于固定长度、预训练的句子表征上。</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222417.png" srcset="/img/loading.gif" lazyload alt="image-20200802192704193" style="zoom:67%;" /></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222428.png" srcset="/img/loading.gif" lazyload alt="image-20200802192854353"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/imgs/20200918222432.png" srcset="/img/loading.gif" lazyload alt="image-20200802192929554"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/10/Meta-Label-Correction-for-Noisy-Label-Learning/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Meta Label Correction for Noisy Label Learning</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/10/%E5%AF%B9%E6%8A%97%E8%BF%87%E6%BB%A4%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%AD%E7%9A%84%E5%81%8F%E5%B7%AE/">
+                        <span class="hidden-mobile">对抗过滤数据集中的偏差</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&quot;auto&quot;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>Self-training/Pseudo Label Methods - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Self-training/Pseudo Label Methods">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-06-10 11:41" pubdate>
+        2021年6月10日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      40
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Self-training/Pseudo Label Methods</h1>
+            
+            <div class="markdown-body">
+              <h2 id="Self-training-伪标签-方法"><a href="#Self-training-伪标签-方法" class="headerlink" title="Self-training / 伪标签 方法"></a>Self-training / 伪标签 方法</h2><font face='楷体'> 近期对半监督学习中自训练（伪标签）算法进行了了一些调研，改方法的通用框架就是用有标签数据训练教师模型后，生成未标注数据供学生模型训练，改方法有效的一种解释是，能够使得模型的决策边界更平滑，也就是基于半监督学习中的**平滑假设**。该算法虽然能为模型带来一定的提升，但由于性能有限，近年来半监督学习的研究热点多凝聚于一致性正则化(Consistency regularization)上，但近期也有些方法依旧是对self-training（伪标签）技术的扩展，通过引入课程学习、元学习等方法，来进一步提高self-training的性能，本文对这些内容进行总结。 </font>
+
+<h3 id="经典的self-training算法"><a href="#经典的self-training算法" class="headerlink" title="经典的self-training算法"></a>经典的self-training算法</h3><p><img src="https://pic1.zhimg.com/80/v2-84d778db8dd4912c86a15c4782fd4020_1440w.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如上图所示，Self-training 的训练过程如下：</p>
+<p><strong>Step1：</strong>首先，用少量的标签数据 L 训练 Model；也就是上图的虚线以上部分；</p>
+<p><strong>Step2：</strong>然后，使用训练后的 Model 给未标记的数据点 x∈U 分配 Pseudo-label（伪标签）；</p>
+<p><strong>Setp3：</strong>通过交叉熵损失计算模型预测和伪标签的损失。</p>
+<p><strong>Step4：</strong>最后，使用训练好的模型为 U 的其余部分生成代理标签，一直循环，直到模型无法生成代理标签为止。</p>
+<p>以下就是 Self-training 的伪代码：</p>
+<p><img src="https://pic3.zhimg.com/80/v2-2317e8030f54e859792962dfc2c2de1a_1440w.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>而 Pseudo-label 与 Self-training 基本思想是一致的，但这类方法主要缺点是：模型无法纠正自己的错误。如果模型对自己预测的结果很有“自信”，但这种自信是盲目的，那么结果就是错的，这种偏差就会在训练中得到放大。</p>
+<h3 id="Curriculum-Labeling-Revisiting-Pseudo-Labeling-for-Semi-Supervised-Learning"><a href="#Curriculum-Labeling-Revisiting-Pseudo-Labeling-for-Semi-Supervised-Learning" class="headerlink" title="Curriculum Labeling: Revisiting Pseudo-Labeling for Semi-Supervised Learning"></a>Curriculum Labeling: Revisiting Pseudo-Labeling for Semi-Supervised Learning</h3><p>链接：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2001.06001.pdf">https://arxiv.org/pdf/2001.06001.pdf</a></p>
+<p>来源：AAAI 2021</p>
+<h5 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h5><p>这篇文章在半监督学习的背景下重新讨论伪标签的思想。伪标签的工作原理是在无标签的样本集中使用伪标签，通过伪标签和已有的标签数据训练模型，通过self-training的循环重复迭代这个过程。现有的方法似乎已经抛弃了这种方式，而倾向于一致性正则化方法，这种方法结合不同风格的自监督损失对无标签样本以及监督损失对有标签样本进行训练。经验证明，伪标签实际上可以与最好的方法相竞争，同时在无标签样本集中，对于ood样本更具弹性。文中通过两个关键因素来使伪标签取得这样的显著的结果：1）应用课程学习原则；2）在每次自训练循环前通过重新启动参数来防止概念漂移；<code>确认偏差与概念漂移现象有关，即目标变量的属性会随着时间的推移而改变。在伪标记中，这一点值得特别注意，因为目标变量受到同一模型的影响</code></p>
+<h5 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h5><p>文中的方法来源于课程学习中先学习简单样本在逐步提升学习困难样本，因此文中的主要挑战是涉及一个课程——如何控制学习步调。文中设计了一种 self-pace 的策略，通过分析在无标签样本上的预测分数的分布以及应用基于极限值理论（EVT）的准则。模型如下：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210206201738.png" srcset="/img/loading.gif" lazyload alt="image-20210206201736890"></p>
+<p>最近，Oliver et al (Oliver et al. 2018)强调了SSL方法评估中的一个当前问题，该问题批评了将一小部分训练数据作为“有标签的”，将大量相同的训练数据作为“无标签的”的普遍做法。这种数据分割的方式会导致这样一种场景:<strong>在这种类型的“未标记”集合中的所有图像都隐式地保证它们来自与“已标记”集合完全相同的类分布</strong>。</p>
+<h5 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h5><p>在半监督学习中，数据集 $D=\{x|x\in X\}$ 由有标签子集 $D_L=\{(x,y)|x \in X,y\in Y\}$ 和无标签子集 $D_{UL}=\{x|x \in X\}$ 构成，其中 x，y 表示输入和对应的标签，通常 $|D_L| \ll |D _ {UL}|$；</p>
+<p>伪标签建立在通常的 self-training 框架上，模型首先在 DLDL 上进行训练，后续的训练则是在 DLDL 以及伪标注的无标签子集 DULDUL 上。在 tt 轮次，令训练样本表示为 $(X_t,Y_t)$，当前模型表示为 $P _ {\theta}^t$，其中 θ 为模型参数， 且 t∈{1,⋯,T}；在 t 轮后，无标签子集 $\bar{X_t}$ 被并入 $X _ {t+1}:=X_1\cup \bar{X_t}$，并且新的目标集定义为 $Y _ {t+1}:=Y_1\cup \bar{Y_t}$，这里 $\bar{Y_t}$ 代表当前模型 $P _ {\theta}^t$ 为 $\bar{X_t}$ 打上的伪标签；<code>这些都是常规的 self-traiing步骤</code></p>
+<p>本文的关键是用于<strong>确定在每个训练轮次中将无标签子集中哪些样本融入到训练样本</strong>的准则。已有的方法包括选择具有高置信度的样本，或在特征空间中检索最近的样本。文中从极值理论（Extreme Value Theory: 用来模拟一维概率分布尾部的极端事件）中汲取了一些观点。在本文的问题中，作者观察到伪标签数据的最大概率预测分布遵循这种类型的 Pareto 分布。因此，我们不是使用固定的阈值或手动调整阈值，而是使用百分位分数来决定添加哪些样本。下图中的算法描述了本文模型的算法流程；</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210206215sda504.png" srcset="/img/loading.gif" lazyload alt="image-20210206215503038"></p>
+<p>其中 Percentile(X,TR)Percentile(X,TR) 返回第 r 个百分位数；</p>
+<blockquote>
+<p>关于算法，我的理解是，首先设定一个阈值，利用百分位数函数 Percentile() 获取当前轮次中高于该阈值的预测结果并将其加入有标签集，重新训练一次模型，之后逐渐降低阈值；感觉上创新点并不是很多，另外关于极值理论在本算法中的应用也不是很理解，原文中还有一节理论分析，或许有答案；</p>
+</blockquote>
+<h3 id="Meta-Pseudo-Labels"><a href="#Meta-Pseudo-Labels" class="headerlink" title="Meta Pseudo Labels"></a>Meta Pseudo Labels</h3><p>Link: <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2003.10580.pdf">https://arxiv.org/pdf/2003.10580.pdf</a></p>
+<p>来源：Google AI Brain</p>
+<h5 id="Abs"><a href="#Abs" class="headerlink" title="Abs"></a>Abs</h5><p>文中提出了一种元伪标签模型，包括一个教师网络来生成伪标签用于指导学生网络，不同于伪标签算法中教师网络参数固定，在本文中教师网络的参数也随着学生网络在有标签数据集上表现的反馈而进行调整；</p>
+<h5 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h5><p>伪标签方法中，如果教师模型标注的伪标签是不正确的，那么学生模型从不正确的数据中学习，其性能很难超过教师模型，这种反馈被称为伪标注的确认偏差。本文设计了一种系统化机制，让教师模型通过观察其伪标签如何影响到学生模型，以此纠正偏差。该方法称为 Meta Pseudo Labels，利用学生模型的反馈来提醒教师模型产生更好的伪标签。即教师模型和学生模型的训练是并行的：1）学生模型学习教师模型标注的伪标签数据；2）教师模型从学生模型在有标签数据集上的表现所反馈的奖励种进行学习；</p>
+<h5 id="Method-1"><a href="#Method-1" class="headerlink" title="Method"></a>Method</h5><p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209163400.png" srcset="/img/loading.gif" lazyload alt="image-20210209163359148"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209163430.png" srcset="/img/loading.gif" lazyload alt="image-20210209163428879"></p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/202102091625s10.png" srcset="/img/loading.gif" lazyload alt="image-20210209162448194"></p>
+<p>不同与伪标签算法，本文的想法是通过优化学生模型在有标签数据上的目标函数 LlLl，来对教师模型参数 θTθT 的优化提供信号，但是要计算相关梯度非常复杂，文中提供了一种元学习中的近似方法：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209163348.png" srcset="/img/loading.gif" lazyload alt="image-20210209163346810"></p>
+<p>将上式代入式(2) 中，得到元伪标签模型的教师模型优化目标：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209163540.png" srcset="/img/loading.gif" lazyload alt="image-20210209163537256"></p>
+<p>教师模型和学生模型的优化：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209164258.png" srcset="/img/loading.gif" lazyload alt="image-20210209164254577"></p>
+<p>此外，文中还发现为教师模型添加一些辅助损失能提升性能；完整的算法流程如下：</p>
+<p><img src="https://raw.githubusercontent.com/W-lw/imgBed/master/20210209164511.png" srcset="/img/loading.gif" lazyload alt="image-20210209164509605"></p>
+<blockquote>
+<p>整体上可以这么理解文中算法：首先是有一批有标签数据和无标签数据，以及初始化的教师模型和学生模型，用教师模型在无标签数据集上生成伪标签，然后用得到的伪标签数据训练学生模型并更新参数，用更新后的学生模型在有标签数据集上进行训练计算loss，用该loss优化教师模型的参数，重复下去；此外，作者发现可以用有标签数据微调学生模型能带来提升，为教师模型添加一些自监督辅助任务也能有提升；</p>
+</blockquote>
+<h3 id="Self-training-with-Noisy-Student-improves-ImageNet-classification（CVPR2020）"><a href="#Self-training-with-Noisy-Student-improves-ImageNet-classification（CVPR2020）" class="headerlink" title="Self-training with Noisy Student improves ImageNet classification（CVPR2020）"></a>Self-training with Noisy Student improves ImageNet classification（CVPR2020）</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1911.04252">link</a></p>
+<h5 id="What-is-Noisy-Student"><a href="#What-is-Noisy-Student" class="headerlink" title="What is Noisy Student?"></a>What is Noisy Student?</h5><p>Self-training是利用未标记数据的好方法。但这篇来自Google的文章却强调了Noisy Student。怎么回事？它与经典方法有什么不同吗？</p>
+<p>Noisy Student的作者发现，要使这种方法发挥作用，student model在训练过程中应加噪声，如dropout, stochastic depth andaugmentation等。而teacher model在产生伪标签时不应加噪声。因为Noisy 是整个算法的一个重要部分，所以他们称之为“Noisy Student”。</p>
+<p>Noisy Student与经典的自学习算法相似，但主要区别在于使用不同的方法给学生增加噪音。需要注意的是，当生成伪标签时，教师并没有被噪声干扰。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-241ae2ad68eb85b0896e48a0f5c5ef50_1440w.jpg" srcset="/img/loading.gif" lazyload alt="img">img</p>
+<p>除了噪音，还有两点对Noisy Student来说很重要。</p>
+<p>（1）尽管教师和学生的结构可以相同，但学生模型的容量应该更高。为什么？因为它必须适合一个更大的数据集（标签和伪标签）。因此，学生模型必须大于教师模型。</p>
+<p>（2）平衡数据：作者发现，当每个类的未标记图像数量相同时，学生模型效果良好。</p>
+<font face="楷体"> 观察上述三篇近一年内的文章，分别是将self-training与课程学习、元优化策略、噪声鲁棒性等方法结合：其中第一篇认为伪标签的学习应该根据课程学习的原则，由易渐难，并且处理了概念漂移问题，可以认为篇文章是对self-training过程中无标签样本的采样进行改进；第二篇的想法更直接——既然我们的目标是提升学生模型在 教师模型标注的伪标签数据 上训练后的效果，那我们的就应该让学生模型训练的结果反馈到教师模型的参数更新上，然而这种方法难以计算梯度，遂借鉴了元学习MAML中的优化策略，近似计算梯度，使得上述方法能够得以实现，此外，作者还在教师模型的训练过程中加入一些自监督任务（相当于一致性正则化的思想），也能提升模型效果，因此，这篇文章可以看作是对self-training算法中教师-学生模型交互的改进，使两者能够在训练中耦合在一起；第三篇文章的思想则是改进学生模型，使其比教师模型更大且用带大量noise的数据训练，增强鲁棒性，算法简单粗暴，但是有效，并且有一篇EMNLP2020上的工作将其引入到disfluency detection的工作上，可以将这种算法看作对self-training的数据增强;由此可见，self-training中其实由很多可挖的点，与一些新技术的结合，即使是一些很细微的改进也能带来性能的提升，因此self-training技术其实并未过时，这种简单有效的方法，只要加上一些其它约束，就能够得到进一步的性能提升。</font>
+
+<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><p>【1】长文总结半监督学习（Semi-Supervised Learning） - PaperWeekly的文章 - 知乎 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/252343352">https://zhuanlan.zhihu.com/p/252343352</a></p>
+<p>【2】半监督学习 - 马东什么的文章 - 知乎 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/349107869">https://zhuanlan.zhihu.com/p/349107869</a></p>
+<p>【3】Self-training with Noisy Student - yanwan的文章 - 知乎 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/164597142">https://zhuanlan.zhihu.com/p/164597142</a></p>
+<h3 id="补充：IN-DEFENSE-OF-PSEUDO-LABELING-AN-UNCERTAINTY-AWARE-PSEUDO-LABEL-SELECTION-FRAMEWORK-FOR-SEMI-SUPERVISED-LEARNING"><a href="#补充：IN-DEFENSE-OF-PSEUDO-LABELING-AN-UNCERTAINTY-AWARE-PSEUDO-LABEL-SELECTION-FRAMEWORK-FOR-SEMI-SUPERVISED-LEARNING" class="headerlink" title="补充：IN DEFENSE OF PSEUDO-LABELING: AN UNCERTAINTY-AWARE PSEUDO-LABEL SELECTION FRAMEWORK FOR SEMI-SUPERVISED LEARNING"></a>补充：IN DEFENSE OF PSEUDO-LABELING: AN UNCERTAINTY-AWARE PSEUDO-LABEL SELECTION FRAMEWORK FOR SEMI-SUPERVISED LEARNING</h3><p>ICLR 2021</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2101.06329.pdf">https://arxiv.org/pdf/2101.06329.pdf</a></p>
+<p>伪标签还能这样用？半监督力作UPS（ICLR 21）大揭秘！ - 罗驳思的文章 - 知乎 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/350701042">https://zhuanlan.zhihu.com/p/350701042</a></p>
+<p><strong>不确定性估计与伪标签技术的结合</strong></p>
+<h5 id="Abstract-1"><a href="#Abstract-1" class="headerlink" title="Abstract"></a>Abstract</h5><p>最近在半监督学习（SSL）中的研究主要由基于一致性正则化的方法主导，这些方法可实现出色的性能。但是，它们严重依赖于特定域的数据扩充，这对于所有数据模态来说都不容易生成。伪标签（PL）是一种通用的SSL方法，它没有此限制，但在其原始形式中效果相对较差。作者认为，伪标签（PL）的表现不佳，是由于模型校准不正确造成的高置信度预测错误；这些预测会产生许多错误的伪标签，从而导致训练繁琐。作者提出了一种不确定性感知的伪标签选择（UPS）框架，该框架通过大幅度减少训练过程中遇到的噪声量来提高伪标签的准确性。此外，UPS推广了伪标签过程，从而可以创建负样本伪标签。这些负样本伪标签可用于多标签分类以及用于改进单标签分类的负样本学习。与CIFAR-10和CIFAR-100数据集上的最新SSL方法相比，文章获得了出色的性能。此外，作者还表示该方法在视频数据集UCF-101和多标签数据集Pascal VOC上也取得了不错的性能。</p>
+<h5 id="Intro-1"><a href="#Intro-1" class="headerlink" title="Intro"></a>Intro</h5><p>SSL的一个常见的假设是决策边界应该位于低密度区域，基于一致性-正则化的方法通过令网络的输出在小的输入扰动下保持不变来实现这一点，然而，这些方法的一个问题使，它们依赖于数据增强得到的丰富扩展集，例如仿射转换、裁剪等，这限制了它们在增强效果较差的领域的能力。基于伪标签的方法选择置信度搞的无标签样本为训练目标（伪标签），这可以看作是熵最小化的一种形式，它减少了决策边界上的数据点密度。与一致性正则化相比，伪标记的一个优点是它本质上不需要扩充，并且可以广泛应用于大多数领域。然而，最近的一致性正则化方法在SSL基准测试上的表现往往优于伪标记。这项工作是为伪标记辩护的:我们证明了基于伪标记的方法与一致性正则化方法的性能相当。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/10/Meta-Label-Correction-for-Noisy-Label-Learning/">
+                        <span class="hidden-mobile">Meta Label Correction for Noisy Label Learning</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.10/dist/katex.min.css" />
+  
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script> -->
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
